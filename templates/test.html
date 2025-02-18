@@ -1,0 +1,10 @@
+<form action="{{ url_for('submit_table') }}" method="POST">
+    <table>
+        <tr>
+            <td><input type="text" name="cell1" value="Data1"></td>
+            <td><input type="text" name="cell2" value="Data2"></td>
+        </tr>
+        <!-- 必要に応じて他の行も追加 -->
+    </table>
+    <button type="submit">Submit</button>
+</form>

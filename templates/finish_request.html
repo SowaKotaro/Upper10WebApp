@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <div>
+        <title>登録完了</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/request.css') }}">
+    </div>
+</head>
+
+<body>
+    <div class="background-washi">
+        <center>
+
+            <img class="title-logo" src="{{ url_for('static', filename='images/title_logo_jpn.png') }}"
+                alt="title logo">
+            <h2>リクエストいただいたデータは、管理者のチェックの上でデータベースへと登録されます。</h2>
+            <h2>リクエストありがとうございました</h2>
+            <div class="container">
+                <div class="contents">
+                    <div class="a-area">
+                        <a href="/">
+                            <h2>トップページへもどる</h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="contents">
+                    <div class="a-area">
+                        <a href="/request">
+                            <h2>単語のリクエストをつづける</h2>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </center>
+    </div>
+</body>
+
+</html>

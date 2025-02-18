@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <div class="background-washi">
+        <title>管理者用ページ</title>
+    </div>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            /* 縦方向に配置 */
+            align-items: center;
+            /* 中央揃え */
+        }
+
+        form {
+            margin-bottom: 15px;
+            /* ボタン同士の間隔 */
+        }
+
+        button {
+            width: 300px;
+            /* 横幅を300pxに指定 */
+            padding: 10px;
+            /* ボタンの内側の余白 */
+            font-size: 16px;
+            /* 文字サイズ */
+            border: none;
+            /* 文字色 */
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="background-washi">
+        <div class="container">
+            <form method="POST" style="margin-top: 30px;" name="a_form" action="{{ url_for('upload') }}">
+                <button type="submit">アップロードページ</button>
+            </form>
+            <form method="POST" name="a_form" action="{{ url_for('modify') }}">
+                <button type="submit">編集ページ</button>
+            </form>
+            <form method="POST" style="margin-top: 30px;" action="{{ url_for('show_request') }}">
+                <input type="hidden" name="mode" value="view">
+                <button type="submit">リクエスト確認ページ</button>
+            </form>
+            <form method="POST" action="{{ url_for('show_request') }}">
+                <input type="hidden" name="mode" value="confirm">
+                <button type="submit">リクエストの登録</button>
+            </form>
+            <br>
+            <!-- <a href="/delete_all">一括削除</a> -->
+            <a href="/">
+                <h3>もどる</h3>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,579 @@
+/* htmlタグとbodyタグの隙間を消す */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'ヒラギノ明朝 Pro', 'MS P明朝', '游明朝', serif;
+    font-weight: bold;
+}
+
+.header {
+    width: 100%;
+    height: auto;
+    display: flex;
+    font-family: 'ヒラギノ明朝 Pro', 'MS P明朝', '游明朝', serif;
+}
+
+h3 {
+    margin-top: 0%;
+    margin-bottom: 0%;
+}
+
+.total-data {
+    font-size: xx-large;
+}
+
+.refine-button {
+    display: flex;
+    justify-content: center;
+    /* 水平方向の中央揃え */
+    margin: 0;
+    /* デフォルトのマージンをリセット */
+}
+
+.sb,
+.rb {
+    width: 40%;
+    height: 30%;
+    font-size: 16px;
+    border: 4px double #4f8259c4;
+    background-color: #ffffff80;
+    cursor: pointer;
+    font-family: 'ヒラギノ明朝 Pro', 'MS P明朝', '游明朝', serif;
+}
+
+.paginate_links {
+    display: flex;
+    /* 横並びにする */
+    flex-wrap: wrap;
+    /* 折り返し可能にする */
+    justify-content: center;
+    /* 中央揃え */
+    max-width: 100%;
+    /* 最大幅を100%に設定 */
+    width: 100%;
+    /* 幅を100%に設定 */
+    padding: 10px;
+    /* 内側の余白 */
+    margin: 0 auto;
+    /* 中央に配置 */
+    box-sizing: border-box;
+    /* パディングやマージンの計算に要素の幅を含める */
+    overflow: hidden;
+    /* はみ出しを隠す */
+}
+
+/* ページネーション全体のスタイル */
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+    flex-basis: 100%;
+    /* 幅を100%に設定 */
+}
+
+.pagination li {
+    margin: 0 .8vh;
+    color: #0a3512;
+}
+
+.pagination li a {
+    padding: .7vh 3vh;
+    text-decoration: none;
+    color: #0a3512c4;
+    border: 1px solid #4f8259c4;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination li a:hover {
+    background-color: #4f8259c4;
+    color: white;
+}
+
+.pagination li.active a {
+    background-color: #4f8259c4;
+    color: white;
+    border-color: #4f8259c4;
+    cursor: default;
+}
+
+.pagination li.disabled a {
+    color: #6c757d;
+    background-color: #ffffff80;
+    border-color: #dee2e6;
+    pointer-events: none;
+}
+
+.page-link {
+    padding: .7vh 1vh;
+}
+
+/* .textBox {
+    width: 60%;
+    margin: 0 auto;
+    border: 7px double #C4C2AC;
+    border-radius: 5px;
+    padding: 30px;
+    position: relative;
+}
+
+.textBox::before {
+    background-color: #ffffff00;
+    color: #333;
+    content: "TOPICS";
+    font-weight: bold;
+    left: 30px;
+    padding: 3px 10px;
+    position: absolute;
+    top: -15px;
+} */
+
+.textBox {
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 1%;
+    position: relative;
+    border-top: 7px double #C4C2AC;
+    border-bottom: 7px double #C4C2AC;
+}
+
+.textBox::before,
+.textBox::after,
+.textBox .before2,
+.textBox .after2 {
+    content: '';
+    position: absolute;
+    top: -10px;
+    width: 2px;
+    height: calc(100% + 20px);
+    background-color: #C4C2AC;
+}
+
+.textBox::before {
+    left: 10px;
+}
+
+.textBox::after {
+    right: 10px;
+}
+
+.textBox .before2 {
+    left: 17px;
+    /* 追加する縦棒の位置を調整 */
+}
+
+.textBox .after2 {
+    right: 17px;
+    /* 追加する縦棒の位置を調整 */
+}
+
+.textBox p {
+    margin: 0;
+    padding: 0;
+}
+
+.sorting-radio {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sort-radio-table {
+    width: 100%;
+    /* テーブルが70%のエリア内で100%に広がるように */
+}
+
+.sort-table {
+    flex-basis: 70%;
+    border: 0px none;
+}
+
+.radio-title {
+    background-color: #4f805955;
+    border: 0px none;
+    width: 12%;
+}
+
+.sort-row {
+    border: 0px none;
+}
+
+.radio-button {
+    text-align: left;
+    background-color: #dedede55;
+    border: 0px none;
+    width: 20%;
+}
+
+.sort-button-area {
+    flex-basis: 30%;
+    display: flex;
+    justify-content: center;
+}
+
+.sort-button {
+    width: 70%;
+    /* 画像がエリア内で適切に表示されるように */
+}
+
+
+.title-db {
+    margin: 3vh 0;
+    padding: 0;
+    position: relative;
+    width: 40%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.to-top {
+    width: 85%;
+    height: auto;
+}
+
+.title-logo {
+    width: 100%;
+    height: auto;
+    /* object-fit: cover; */
+}
+
+
+.outline-of-app {
+    width: 60%;
+    text-align: center;
+}
+
+.total-data {
+    font-size: 3em;
+    /* h1 よりも大きいサイズ */
+    font-weight: bold;
+    /* 必要に応じて太字にすることもできます */
+}
+
+
+/* 背景画像を繰り返す */
+.background-washi {
+    margin-top: 0%;
+    background-image: url("../images/washi_back01.jpg");
+    background-repeat: repeat;
+    background-size: 10%;
+    width: 100%;
+    display: flex;
+}
+
+/* サイドバーの設定 */
+.sidebar {
+    width: 30%;
+    background-color: rgba(255, 255, 255, 0);
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.refine-area,
+.sorting-area {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    font-size: x-large;
+    padding: 0;
+    margin: 0;
+}
+
+.refine-area::before {
+    content: '';
+    flex: 1;
+    border-bottom: 7px double #4f805991;
+    /* margin-left: 3%; */
+    margin-right: 1%;
+    /* margin: 0% 1% 5.5% 0%; */
+}
+
+.refine-area::after {
+    content: '';
+    flex: 1;
+    border-bottom: 7px double #4f805991;
+    /* margin-right: 3%; */
+    margin-left: 1%;
+    /* margin: 5.5% 0% 0% 1%; */
+}
+
+.sorting-area::before {
+    content: '';
+    flex: 1;
+    border-bottom: 7px double #4f805991;
+    /* margin-left: 3%; */
+    margin: 0% 1% 0% 2.5%;
+}
+
+.sorting-area::after {
+    content: '';
+    flex: 1;
+    border-bottom: 7px double #4f805991;
+    /* margin-right: 3%; */
+    margin: 0% 2.5% 0% 1%;
+}
+
+/* 
+.double-line{
+    border-bottom: 7px double #4f805991;
+} */
+
+
+.refine-head-text,
+.refine-tail-text,
+.refine-length-text {
+    text-align: center;
+    font-size: large;
+    padding: 0;
+    margin-bottom: 0;
+    background-image: linear-gradient(90deg, #4f805991 0 20%, #dedede 20%);
+    background-repeat: no-repeat;
+    background-size: 62% 20%;
+    background-position: 50% 75%;
+    color: #323232;
+    font-weight: bold;
+    /* font-size: 26px; */
+}
+
+.refine-head,
+.refine-tail {
+    border-collapse: collapse;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.slider-container {
+    width: 75%;
+    position: relative;
+    margin: 0 auto;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #d6cd96;
+    outline: none;
+    border-radius: 15px;
+    position: absolute;
+    margin-top: 3%;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #234f38;
+    border-radius: 10%;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    margin-top: 0%;
+}
+
+.range-track {
+    position: absolute;
+    height: 3px;
+    background: #5e684a;
+    border-radius: 5px;
+    z-index: 0;
+    margin-top: 3%;
+}
+
+.range-values {
+    margin-top: 0px;
+    font-size: 18px;
+    text-align: center;
+}
+
+
+/* 表示内容の設定 */
+.contents {
+    width: 100%;
+    font-size: large;
+}
+
+.word-table {
+    margin-bottom: 5%;
+    border-collapse: collapse;
+    width: 90%;
+    background-color: rgba(183, 189, 172, 0.3);
+    color: #000000;
+}
+
+.table-header {
+    border-collapse: collapse;
+    background-color: rgba(24, 53, 37, 0.7);
+    color: white;
+    border-collapse: separate;
+}
+
+table {
+    z-index: 2;
+    width: 80%;
+}
+
+table td {
+    /*word-break: break-all;*/
+    overflow-wrap: break-word;
+}
+
+.sidebar {
+    width: 30%;
+    background-color: rgba(255, 255, 255, 0);
+    box-sizing: border-box;
+    align-items: center;
+}
+
+/* デスクトップ表示時のサイドバー */
+#sidebar {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0);
+    box-sizing: border-box;
+    align-items: center;
+}
+
+#refine-toggle,
+#sort-toggle {
+    display: none;
+}
+
+/* スマートフォン表示時のスタイル */
+@media (max-width: 768px) {
+    .pagination li a {
+        padding: .4vh 1vh;
+        text-decoration: none;
+        color: #0a3512c4;
+        border: 1px solid #4f8259c4;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%; /* 親要素の幅を画面全体に広げる */
+        box-sizing: border-box; /* パディングやボーダーを含める */
+    }
+
+    .outline-of-app {
+        width: 100%;
+    }
+
+    .title-db {
+        width: 100%;
+        margin-bottom: 0;
+    }
+    .total-data {
+        font-size: xx-large;
+    }
+    .hit-count {
+        width: 100%; /* 親要素の幅に合わせる */
+        text-align: center; /* テキストを中央揃え */
+        box-sizing: border-box;
+        font-size: small;
+
+    }
+
+    .sidebar {
+        width: 0%;
+        /* スマートフォンではサイドバーを非表示 */
+    }
+
+    .contents {
+        width: 100%;
+        /* メインコンテンツを全幅に */
+    }
+
+    #sidebar {
+        position: fixed;
+        left: -768px;
+        /* 初期状態では画面外に隠す */
+        top: 0;
+        width: 400px;
+        height: 100%;
+        /* 画面全体の高さに固定 */
+        background-image: url("../images/washi_back01.jpg");
+        background-repeat: repeat;
+        background-size: 10%;
+        padding: 15px;
+        transition: left 0.3s ease;
+        /* スムーズに表示するためのアニメーション */
+        z-index: 1000;
+        /* メインコンテンツの上に重なるように設定 */
+        overflow-y: auto;
+        /* サイドバー内でスクロールを許可 */
+    }
+
+    #head-sort {
+        position: fixed;
+        /* 絶対位置で配置 */
+        top: -400px;
+        /* 上部に配置 */
+        left: 0;
+        width: 100%;
+        /* 幅を全体に */
+        transition: top 0.3s ease;
+        /* アニメーション効果 */
+        background-image: url("../images/washi_back01.jpg");
+        background-repeat: repeat;
+        background-size: 10%;
+        z-index: 1000;
+    }
+
+    #head-sort.hidden {
+        top: -100px;
+        /* ヘッダーを隠す位置 */
+    }
+
+
+    #refine-toggle {
+        display: block;
+        cursor: pointer;
+        position: fixed;
+        bottom: 10px;
+        /* 画面下部に固定 */
+        left: 40%;
+        /* 画面中央に表示 */
+        transform: translateX(-50%);
+        /* 中央寄せ */
+        z-index: 1001;
+        background-color: rgba(80, 98, 78, 0.7);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 18px;
+        font-family: 'ヒラギノ明朝 Pro', 'MS P明朝', '游明朝', serif;
+    }
+
+    #sort-toggle {
+        display: block;
+        cursor: pointer;
+        position: fixed;
+        bottom: 10px;
+        /* 画面下部に固定 */
+        left: 60%;
+        /* 画面中央に表示 */
+        transform: translateX(-50%);
+        /* 中央寄せ */
+        z-index: 1001;
+        background-color: rgba(80, 98, 78, 0.7);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 18px;
+        font-family: 'ヒラギノ明朝 Pro', 'MS P明朝', '游明朝', serif;
+    }
+}

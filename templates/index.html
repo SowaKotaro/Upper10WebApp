@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <div class="background-washi">
+        <title>長～～～い言葉のデータベースTOP</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/top.css') }}">
+    </div>
+</head>
+
+<body>
+    <div class="background-washi">
+        <center>
+            <img class="title-logo" src="{{ url_for('static', filename='images/title_logo_jpn.png') }}"
+                alt="title logo">
+            <div class="container">
+                <div class="contents">
+                    <div class="img-area">
+                        <img class="admin-img" src="{{ url_for('static', filename='images/upload.png') }}"
+                            alt="An Edo Period Japanese man writing a letter">
+                    </div>
+                    <div class="a-area">
+                        <a href="/admin">
+                            <h2>管理者用ページ（管理者以外アクセスできません）</h2>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+                <div class="contents">
+                    <div class="img-area">
+                        <img class="view-img" src="{{ url_for('static', filename='images/view.png') }}"
+                            alt="elder Japanese in the Edo period reading documents">
+                    </div>
+                    <div class="a-area">
+                        <a href="/view_records">
+                            <h2>閲覧・検索ページ</h2>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+                <div class="contents">
+                    <div class="img-area">
+                        <img class="view-img" src="{{ url_for('static', filename='images/request.png') }}"
+                            alt="elder Japanese in the Edo period reading documents">
+                    </div>
+                    <div class="a-area">
+                        <a href="/request">
+                            <h2>単語のリクエストページ</h2>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+                <div class="contents">
+                    <div class="img-areaa">
+                        <img class="stats-img" src="{{ url_for('static', filename='images/stats.png') }}"
+                            alt="Japanese man in Edo period sitting with abacus">
+                    </div>
+                    <div class="a-area">
+                        <a href="/view_stats">
+                            <h2>統計ページ（ベータ版）</h2>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+                <div class="contents-manual">
+                    <div class="img-area-manual">
+                        <img class="manual-img" src="{{ url_for('static', filename='images/manual.png') }}"
+                            alt="Japanese man in Edo period sitting with abacus">
+                    </div>
+                    <div class="a-area-manual">
+                        <a href="/manual">
+                            <h2>利用案内</h2>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </center>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPDATE</title>
+</head>
+
+<body>
+    <h1>どのデータを編集しますか？</h1>
+    <form action="{{ url_for('search_record') }}" method="POST">
+        id = <input type="text" name="word_id">
+        <button type="submit">search</button>
+    </form>
+    {% if code == 1 %}
+    <h1>更新</h1>
+    <table id="update_table" border="1">
+        <thead>
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>単語</th>
+                <th>フリガナ</th>
+                <th>長さ</th>
+                <th>頭</th>
+                <th>尻</th>
+            </tr>
+        </thead>
+        <form action="{{ url_for('execute_update') }}" method="POST", id="update">
+            <tbody>
+                <tr>
+                    <td>旧</td>
+                    <td><input style="font-size:16px" type="hidden" name="old-0" value="{{ record[0] }}">{{ record[0] }}</td>
+                    <td><input style="font-size:16px" type="hidden" name="old-1" value="{{ record[1] }}">{{ record[1] }}</td>
+                    <td><input style="font-size:16px" type="hidden" name="old-2" value="{{ record[2] }}">{{ record[2] }}</td>
+                    <td><input style="font-size:16px" type="hidden" name="old-3" value="{{ record[3] }}">{{ record[3] }}</td>
+                    <td><input style="font-size:16px" type="hidden" name="old-4" value="{{ record[4] }}">{{ record[4] }}</td>
+                    <td><input style="font-size:16px" type="hidden" name="old-5" value="{{ record[5] }}">{{ record[5] }}</td>
+                </tr>
+                <tr>
+                    <td>新</td>
+                    <td><textarea style="font-size:15.8px" rows="2" cols="5" name="new-0"></textarea></td>
+                    <td><textarea style="font-size:15.8px" rows="2" cols="50" name="new-1"></textarea></td>
+                    <td><textarea style="font-size:15.8px" rows="2" cols="50" name="new-2"></textarea></td>
+                    <td><textarea style="font-size:15.8px" rows="2" cols="5" name="new-3"></textarea></td>
+                    <td><textarea style="font-size:15.8px" rows="2" cols="5" name="new-4"></textarea></td>
+                    <td><textarea style="font-size:15.8px" rows="2" cols="5" name="new-5"></textarea></td>
+                </tr>
+            </tbody>
+        </form>
+    </table>
+    <button type="submit" form="update">更新</button>
+
+    <h1>削除</h1>
+    <table id="delete_table" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>単語</th>
+                <th>フリガナ</th>
+                <th>長さ</th>
+                <th>頭</th>
+                <th>尻</th>
+            </tr>
+        </thead>
+        <form action="{{ url_for('execute_delete') }}" method="POST", id="delete">
+            <tbody>
+                <tr>
+                    <td><input type="hidden" name="word_id" value="{{ record[0] }}">{{ record[0] }}</td>
+                    <td><input type="hidden" name="word" value="{{ record[1] }}">{{ record[1] }}</td>
+                    <td><input type="hidden" name="furigana" value="{{ record[2] }}">{{ record[2] }}</td>
+                    <td><input type="hidden" name="length" value="{{ record[3] }}">{{ record[3] }}</td>
+                    <td><input type="hidden" name="head" value="{{ record[4] }}">{{ record[4] }}</td>
+                    <td><input type="hidden" name="tail" value="{{ record[5] }}">{{ record[5] }}</td>
+                </tr>
+            </tbody>
+        </form>
+    </table>
+    <button type="submit" form="delete">削除</button>
+    {% endif %}
+</body>
+
+</html>

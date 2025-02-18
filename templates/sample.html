@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>upper10 データ推移グラフ</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #chart-container {
+            width: 70%;
+            margin: 0 auto; /* 左右中央配置 */
+            text-align: center;
+        }
+    
+        #lineChart {
+            width: 100%; /* 親要素の幅に合わせる */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h2>upper10 テーブルのデータ推移</h2>
+
+    <div id="chart-container">
+        <canvas id="lineChart"></canvas>
+    </div>
+    
+    <script>
+        async function fetchData() {
+            const response = await fetch("/data");
+            const data = await response.json();
+            return data.map(item => ({
+                x: item.timestamp,
+                y: item.total_count
+            }));
+        }
+
+        async function renderChart() {
+            const ctx = document.getElementById("lineChart").getContext("2d");
+            const chartData = await fetchData();
+
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: chartData.map(item => item.x),
+                    datasets: [{
+                        label: "データ総数の推移",
+                        data: chartData.map(item => item.y),
+                        borderColor: "blue",
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: { type: "category" },
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        renderChart();
+    </script>
+</body>
+</html>

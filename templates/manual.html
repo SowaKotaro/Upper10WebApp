@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>利用案内</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manual.css') }}">
+</head>
+
+<body>
+    <div class="background-washi">
+        <div>
+            <a class="to-top" href="{{ url_for('index') }}">
+                <!-- 画像引用元：https://ukiyoestock.com/jp/ -->
+                <img style="width: 20%;" class="title-logo"
+                    src="{{ url_for('static', filename='images/title_logo_jpn.png') }}" alt="title logo">
+            </a>
+        </div>
+        <div class="riyou-annai">利 用 案 内</div>
+        <div class="index-list">
+            <div>
+                目次
+                <label><input type="checkbox" /></label>
+            </div>
+            <ol>
+                <li><a href="#sec1">い、本ウェブサイトについて</a></li>
+                <li><a href="#sec2">ろ、トップページについて</a></li>
+                <li>
+                    <a href="#sec3">は、検索・閲覧ページについて</a>
+                    <ol>
+                        <li><a href="#sec3-1">　一、サイトロゴについて</a></li>
+                        <li><a href="#sec3-2">　二、絞り込み検索欄について</a></li>
+                        <ol>
+                            <li><a href="#sec3-2-1">　　◆先頭文字の選択，末尾文字の選択</a></li>
+                            <li><a href="#sec3-2-2">　　◆単語帳の範囲</a></li>
+                            <li><a href="#sec3-2-3">　　◆文字列検索</a></li>
+                        </ol>
+                        <li><a href="#sec3-3">　三、並び替え選択欄について</a></li>
+                        <ol>
+                            <li><a href="#sec3-3-1">　　◆辞書順，辞書逆順</a></li>
+                            <li><a href="#sec3-3-2">　　◆長さ昇順，長さ降順</a></li>
+                            <li><a href="#sec3-3-3">　　◆登録順，登録逆順</a></li>
+                        </ol>
+                    </ol>
+                </li>
+                <li><a href="#sec4">に、免責事項</a></li>
+            </ol>
+        </div>
+        <br>
+        <div style="margin: 0 auto; text-align: center; width: 70%;" class="contents">
+            <section id="sec1">
+                <h1 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                    ||本ウェブサイトについて
+                </h1>
+                <div class="section-content">
+                    <div style="width: 85%; margin: 0 auto;">
+                        <p>本ウェブサイトは管理人が収集した10文字以上の単語に関して</p>
+                        <h3>「単語」「読み」「文字長」「頭文字」「末尾文字」</h3>
+                        <p>を検索・閲覧できるサイトとなっております．</p>
+                        <p>しりとりや古今東西などの言葉遊びの際にご活用ください．</p>
+                    </div>
+                </div>
+            </section>
+            <section id="sec2">
+                <h1 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                    ||トップページについて
+                </h1>
+                <div class="section-content">
+                    <div style="width: 85%; margin: 0 auto;">
+                        <p>トップページには「管理者用ページ」「検索・閲覧ページ」「統計ページ」「利用案内」の4つのリンクを設置しています</p>
+                        <p>ご利用いただけるのは「検索・閲覧ページ」「統計ページ」「利用案内」の3つとなっております．</p>
+                        <p>「管理者用ページ」はご利用いただけませんので，何卒ご了承くださいますようお願い申し上げます．</p>
+                    </div>
+                </div>
+            </section>
+            <section id="sec3">
+                <h1 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                    ||検索・閲覧ページについて
+                </h1>
+                <p style="margin-top: 1%;">検索・閲覧ページでは，登録されている10文字以上の単語を検索・閲覧いただけます．</p>
+                <section id="sec3-1" style="margin-top: 1%;">
+                    <h3 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                        |||サイトロゴについて
+                    </h3>
+                    <p style="margin-top: 1%;">画面左上に表示されるサイトロゴをクリックするとトップページに戻ります．</p>
+                    <div class="image-container" style="width: 85%; margin: 0 auto;">
+                        <img style="width: 70%; margin-top: 0%;" class="clickable-image"
+                            src="{{ url_for('static', filename='images/sitelogo-to-top.png') }}" alt="title logo">
+                    </div>
+                    <div id="modal" class="modal">
+                        <span class="close">&times;</span>
+                        <img class="modal-content" id="modal-image">
+                    </div>
+
+                </section>
+                <section id="sec3-2" style="margin-top: 1%;">
+                    <h3 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                        |||絞り込み検索欄について
+                    </h3>
+                    <div class="section-content">
+                        <p style="margin-top: 1%;">
+                            絞り込み検索欄には「先頭文字の選択」「末尾文字の選択」「単語帳の範囲」「文字列検索」の4つの絞り込みフィールドがあります．
+                        </p>
+                        <p style="margin-bottom: 1%;">各フィールドで設定した絞り込み情報はAND検索として処理されます．</p>
+                        <div class="image-container" style="width: 85%; margin: 0 auto;">
+                            <img style="width: 70%; margin-top: 0%;" class="clickable-image"
+                                src="{{ url_for('static', filename='images/refine-fields.png') }}" alt="title logo">
+                        </div>
+                        <div id="modal" class="modal">
+                            <span class="close">&times;</span>
+                            <img class="modal-content" id="modal-image">
+                        </div>
+                    </div>
+                </section>
+                <section id="sec3-2-1" style="margin-top: 1%;">
+                    <h4 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                        ◆先頭文字の選択，末尾文字の選択
+                    </h4>
+                    <div class="section-content">
+                        <p style="margin-top: 1%;">
+                            先頭文字と末尾文字を絞り込む機能です．
+                        </p>
+                        <p>
+                            「先頭文字の選択」および「末尾文字の選択」のフィールドで選択した内容はそれぞれOR検索として機能します．
+                        </p>
+                        <p>
+                            <span class="refine-info">[先頭文字："ア",
+                                "イ"]</span>で検索した場合，アから始まる単語とイから始まる単語をすべて表示します．末尾文字の場合も同様です．
+                        </p>
+                        <p>
+                            ここで，先頭文字または末尾文字を複数選択した場合，それぞれの条件に合致した単語をすべて表示します．
+                        </p>
+
+                        <div class="image-container" style="width: 85%; margin: 0 auto; margin-top: 2%;">
+                            <img style="width: 70%; margin-top: 0%;" class="clickable-image"
+                                src="{{ url_for('static', filename='images/refine-a-ain.png') }}" alt="title logo">
+                        </div>
+                        <div id="modal" class="modal">
+                            <span class="close">&times;</span>
+                            <img class="modal-content" id="modal-image">
+                        </div>
+                        <p><span class="refine-info">[先頭文字："ア"　末尾文字："ア", "イ", "ン"]</span>の条件で検索を行った場合</p>
+                    </div>
+                </section>
+                <section id="sec3-2-2" style="margin-top: 1%;">
+                    <h4 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                        ◆単語長の範囲
+                    </h4>
+                    <div class="section-content">
+                        <p style="margin-top: 1%;">
+                            単語の文字の長さを絞り込む機能です．
+                        </p>
+                        <p>
+                            左右の両端に配置している2つのツマミを調整し，単語帳の最大値と最小値を設定いただけます．
+                        </p>
+                        <p>デフォルト設定では最小値である「10文字以上の単語」が設定されています．絞り込める最大値は30文字で，それ以上の絞り込みの場合は「最小値の文字数以上の単語」として処理されます．2つのツマミを重ねた際には特定の単語長で検索が可能です．
+                        </p>
+                        <div class="image-container" style="width: 85%; margin: 0 auto;">
+                            <img style="width: 70%; margin-top: 0%;" class="clickable-image"
+                                src="{{ url_for('static', filename='images/slider.png') }}" alt="title logo">
+                        </div>
+                        <div id="modal" class="modal">
+                            <span class="close">&times;</span>
+                            <img class="modal-content" id="modal-image">
+                        </div>
+                    </div>
+                </section>
+                <section id="sec3-2-3" style="margin-top: 1%;">
+                    <h4 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                        ◆文字列検索
+                    </h4>
+                    <div class="section-content">
+                        <p style="margin-top: 1%;">
+                            文字列を検索して絞り込む機能です．部分一致検索です．
+                        </p>
+                        <p>
+                            カタカナのみで検索すると「フリガナ」のデータを検索します．カタカナ以外（ひらがな，漢字，アルファベット，数字）を含んだ状態で検索を行うと，「長～～～い単語」のデータを検索します．また，アルファベットの大文字小文字の区別はありません．
+                        </p>
+                        <div class="image-container" style="width: 85%; margin: 0 auto; margin-top: 2%;">
+                            <img style="width: 70%; margin-top: 0%;" class="clickable-image"
+                                src="{{ url_for('static', filename='images/search-and.png') }}" alt="title logo">
+                        </div>
+                        <div id="modal" class="modal">
+                            <span class="close">&times;</span>
+                            <img class="modal-content" id="modal-image">
+                        </div>
+                        「AND」という文字列で検索した場合
+
+                        <div class="image-container" style="width: 85%; margin: 0% auto;margin-top: 1%;">
+                            <img style="width: 70%; margin-top: 0%;" class="clickable-image"
+                                src="{{ url_for('static', filename='images/search-ando.png') }}" alt="title logo">
+                        </div>
+                        <div id="modal" class="modal">
+                            <span class="close">&times;</span>
+                            <img class="modal-content" id="modal-image">
+                        </div>
+                        「アンド」という文字列で検索した場合
+                        <p style="margin-top: 2%;">
+                            セキュリティの観点から日本語，英語以外の言語（ギリシャ文字，ハングルなど）や記号（",=,\,&,$,♥,★など）を含む文字列の検索が行われた際にはヒット数が0件となりますのでご了承ください．
+                        </p>
+                        <p>当サイトでは，表記ゆれやスペースの有無などに影響を受けない<span class="attention">フリガナでの検索</span>をオススメしております．</p>
+                    </div>
+                </section>
+                <section id="sec3-3" style="margin-top: 1%;">
+                    <h3 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                        |||並び替え選択欄について
+                    </h3>
+                    <div class="section-content">
+                        <p style="margin-top: 1%;">
+                            登録しているデータを「辞書順」「長さ順」「登録順」の3種類の並びを選択いただけます．デフォルトでは登録順が適用されます．
+                        </p>
+                    </div>
+                </section>
+                <section id="sec3-3-1" style="margin-top: 1%;">
+                    <h4 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                        ◆辞書順，辞書逆順
+                    </h4>
+                    <div class="section-content">
+                        <p style="margin-top: 1%;">
+                            登録しているデータを辞書順，辞書逆順で並べ替えます．
+                        </p>
+                        <p>
+                            辞書順は以下のルールで並べ替えが行われます．
+                        </p><br>
+                        <div style="text-align: center;">
+                            <ol style="display: inline-block; text-align: left;">
+                                <li>五十音順で並ぶ</li>
+                                <li>清音→濁音→半濁音の順に並ぶ
+                                    <p>例：ホール→ボール→ポール</p>
+                                </li>
+                                <li>大文字→小文字の順に並ぶ
+                                    <p>例：じゆう→じゅう</p>
+                                </li>
+                                <li>長音は直前の母音として扱う
+                                    <p>例：カード = カアド</p>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+                <section id="sec3-3-2" style="margin-top: 1%;">
+                    <h4 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                        ◆長さ昇順，長さ降順
+                    </h4>
+                    <div class="section-content">
+                        <p style="margin-top: 1%;">
+                            文字列の長さ順に並べ替えを行います．文字列の長さが同一の場合，登録順に並びます．
+                        </p>
+                    </div>
+                </section>
+                <section id="sec3-3-3" style="margin-top: 1%;">
+                    <h4 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                        ◆登録順，登録逆順
+                    </h4>
+                    <div class="section-content">
+                        <p style="margin-top: 1%;">
+                            データが登録された順に並べ替えを行います．登録順はすなわちID順となります．
+                        </p>
+                    </div>
+                </section>
+            </section>
+            <section id="sec4">
+                <h1 style="text-align: left; background-color: rgba(255, 255, 255, 0.3);">
+                    ||免責事項
+                </h1>
+                <p style="margin-top: 1%;">
+                    当サイトのコンテンツは，自由に利用していただいて構いません．ただし，以下の事項をご理解いただいた上でご利用ください．
+                </p>
+                <ol>
+                    <li>
+                        当サイトが提供する情報は，100%正確なものを保証するものではありません．情報の正確性や最新性については十分な注意を払っていますが，誤りや不完全な情報が含まれる可能性があります．利用者は，自己の責任において当サイトの情報を利用してください．
+                    </li>
+                    <li>
+                        当サイトの利用に起因して発生した不利益やトラブルについて，当方は一切の責任を負いません．利用者が当サイトを利用することにより生じた問題については，すべて自己の責任において対処するものとします．
+                    </li>
+                    <li>
+                        当サイトのコンテンツを自身のサイトやプロジェクトで使用する際には，クレジットの記載は不要です．ただし，リンクを貼っていただいたり，当サイトの名前を紹介していただけると嬉しく思います．
+                    </li>
+                </ol>
+                <p>
+                    当サイトの利用を通じて，上記の内容に同意いただけるものとします．ご理解のほど，よろしくお願いいたします．
+                </p>
+            </section>
+            <br><br><br>
+        </div>
+    </div>
+    <script>
+        // モーダルを表示するためのスクリプト
+        const modal = document.getElementById('modal');
+        const modalImage = document.getElementById('modal-image');
+        const closeModal = document.querySelector('.close');
+
+        // すべてのクリック可能な画像を取得
+        const clickableImages = document.querySelectorAll('.clickable-image');
+
+        clickableImages.forEach(image => {
+            image.onclick = function () {
+                modal.style.display = 'flex'; // モーダルを表示
+                modalImage.src = this.src; // クリックした画像のソースを取得
+                setTimeout(() => {
+                    modal.classList.add('show'); // モーダルが表示された後にクラスを追加
+                }, 10); // 少し遅らせてアニメーションを適用
+            }
+        });
+
+        // モーダルを閉じる機能
+        closeModal.onclick = function () {
+            modal.classList.remove('show'); // クラスを削除してアニメーションを非表示
+            setTimeout(() => {
+                modal.style.display = 'none'; // モーダルを非表示
+            }, 500); // アニメーションの後にモーダルを隠す
+        }
+
+        // モーダルの外側をクリックしても閉じる
+        modal.onclick = function (event) {
+            if (event.target === modal) {
+                closeModal.onclick(); // 閉じる処理を呼び出す
+            }
+        }
+
+    </script>
+</body>
+
+</html>

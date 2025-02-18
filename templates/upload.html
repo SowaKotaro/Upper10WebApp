@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask Form</title>
+</head>
+<body>
+    <h1>文字列を入力してください</h1>
+    <form method="POST" action="{{ url_for('show_up_content') }}">
+        <p>10文字以上の単語をさ，まとめて入れたらええやんか</p>
+        <textarea name="upper10_words", cols="60", rows="15"></textarea>
+        <input type="submit" value="送信">
+    </form>
+</body>
+</html>

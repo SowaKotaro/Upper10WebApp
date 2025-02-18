@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manual.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'ヒラギノ明朝 Pro', 'MS P明朝', '游明朝', serif;
+            font-size: large;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+            max-width: 90%;
+        }
+
+        td {
+            border: 1px solid rgb(0, 0, 0);
+            height: 6vh;
+            width: 6vh;
+            text-align: center;
+        }
+
+        #chart-container {
+            width: 65%;
+            margin: 0 auto;
+            /* 左右中央配置 */
+            text-align: center;
+        }
+
+        #lineChart {
+            width: 100%;
+            /* 親要素の幅に合わせる */
+            height: auto;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: #606060;
+            color: #fff;
+            width: 7vh;
+            padding: 5px 10px;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 1s, transform 1s;
+            transform: translateY(-10px);
+            /* 上側に表示するための移動 */
+            pointer-events: none;
+            /* マウスイベントを無視 */
+        }
+    </style>
+    <title>統計データ（ベータ版）</title>
+</head>
+
+<body>
+
+        <div style="background-color: white;">
+            <a class="to-top" href="{{ url_for('index') }}">
+                <!-- 画像引用元：https://ukiyoestock.com/jp/ -->
+                <img style="width: 20%;" class="title-logo"
+                    src="{{ url_for('static', filename='images/title_logo_jpn.png') }}" alt="title logo">
+            </a>
+        </div>
+        <div style="text-align: center;">
+            <h1>登録された単語に関する統計データを表示しています</h1>
+        </div>
+
+        <h2 style="text-align: center;">登録推移</h2>
+        <div id="chart-container">
+            <canvas id="lineChart"></canvas>
+        </div>
+
+
+        <table>
+            <h2 style="text-align: center;">先頭文字ヒートマップ</h2>
+            <tr>
+                <td class="hover-cell" data-value="{{ head_num[73] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[73] }}%);">ン
+                </td>
+                <td class="hover-cell" data-value="{{ head_num[69] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[69] }}%);">ワ</td>
+                <td class="hover-cell" data-value="{{ head_num[64] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[64] }}%);">ラ</td>
+                <td class="hover-cell" data-value="{{ head_num[61] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[61] }}%);">ヤ</td>
+                <td class="hover-cell" data-value="{{ head_num[56] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[56] }}%);">マ</td>
+                <td class="hover-cell" data-value="{{ head_num[51] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[51] }}%);">パ</td>
+                <td class="hover-cell" data-value="{{ head_num[46] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[46] }}%);">バ</td>
+                <td class="hover-cell" data-value="{{ head_num[41] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[41] }}%);">ハ</td>
+                <td class="hover-cell" data-value="{{ head_num[36] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[36] }}%);">ナ</td>
+                <td class="hover-cell" data-value="{{ head_num[31] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[31] }}%);">ダ</td>
+                <td class="hover-cell" data-value="{{ head_num[26] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[26] }}%);">タ</td>
+                <td class="hover-cell" data-value="{{ head_num[21] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[21] }}%);">ザ</td>
+                <td class="hover-cell" data-value="{{ head_num[16] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[16] }}%);">サ</td>
+                <td class="hover-cell" data-value="{{ head_num[11] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[11] }}%);">ガ</td>
+                <td class="hover-cell" data-value="{{ head_num[6] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[6] }}%);">カ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ head_num[0] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[0] }}%);">ア</td>
+            </tr>
+            <tr>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ head_num[70] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[70] }}%);">ヰ</td>
+                <td class="hover-cell" data-value="{{ head_num[65] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[65] }}%);">リ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ head_num[57] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[57] }}%);">ミ</td>
+                <td class="hover-cell" data-value="{{ head_num[52] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[52] }}%);">ピ</td>
+                <td class="hover-cell" data-value="{{ head_num[47] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[47] }}%);">ビ</td>
+                <td class="hover-cell" data-value="{{ head_num[42] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[42] }}%);">ヒ</td>
+                <td class="hover-cell" data-value="{{ head_num[37] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[37] }}%);">ニ</td>
+                <td class="hover-cell" data-value="{{ head_num[32] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[32] }}%);">ヂ</td>
+                <td class="hover-cell" data-value="{{ head_num[27] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[27] }}%);">チ</td>
+                <td class="hover-cell" data-value="{{ head_num[22] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[22] }}%);">ジ</td>
+                <td class="hover-cell" data-value="{{ head_num[17] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[17] }}%);">シ</td>
+                <td class="hover-cell" data-value="{{ head_num[12] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[12] }}%);">ギ</td>
+                <td class="hover-cell" data-value="{{ head_num[7] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[7] }}%);">キ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ head_num[1] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[1] }}%);">イ</td>
+            </tr>
+            <tr>
+                <td style="background-color: #00000080;"></td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ head_num[66] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[66] }}%);">ル</td>
+                <td class="hover-cell" data-value="{{ head_num[62] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[62] }}%);">ユ</td>
+                <td class="hover-cell" data-value="{{ head_num[58] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[58] }}%);">ム</td>
+                <td class="hover-cell" data-value="{{ head_num[53] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[53] }}%);">プ</td>
+                <td class="hover-cell" data-value="{{ head_num[48] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[48] }}%);">ブ</td>
+                <td class="hover-cell" data-value="{{ head_num[43] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[43] }}%);">フ</td>
+                <td class="hover-cell" data-value="{{ head_num[38] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[38] }}%);">ヌ</td>
+                <td class="hover-cell" data-value="{{ head_num[33] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[33] }}%);">ヅ</td>
+                <td class="hover-cell" data-value="{{ head_num[28] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[28] }}%);">ツ</td>
+                <td class="hover-cell" data-value="{{ head_num[23] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[23] }}%);">ズ</td>
+                <td class="hover-cell" data-value="{{ head_num[18] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[18] }}%);">ス</td>
+                <td class="hover-cell" data-value="{{ head_num[13] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[13] }}%);">グ</td>
+                <td class="hover-cell" data-value="{{ head_num[8] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[8] }}%);">ク</td>
+                <td class="hover-cell" data-value="{{ head_num[5] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[5] }}%);">ヴ</td>
+                <td class="hover-cell" data-value="{{ head_num[2] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[2] }}%);">ウ</td>
+            </tr>
+            <tr>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ head_num[71] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[71] }}%);">ヱ</td>
+                <td class="hover-cell" data-value="{{ head_num[67] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[67] }}%);">レ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ head_num[59] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[59] }}%);">メ</td>
+                <td class="hover-cell" data-value="{{ head_num[54] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[54] }}%);">ペ</td>
+                <td class="hover-cell" data-value="{{ head_num[49] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[49] }}%);">ベ</td>
+                <td class="hover-cell" data-value="{{ head_num[44] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[44] }}%);">ヘ</td>
+                <td class="hover-cell" data-value="{{ head_num[39] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[39] }}%);">ネ</td>
+                <td class="hover-cell" data-value="{{ head_num[34] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[34] }}%);">デ</td>
+                <td class="hover-cell" data-value="{{ head_num[29] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[29] }}%);">テ</td>
+                <td class="hover-cell" data-value="{{ head_num[24] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[24] }}%);">ゼ</td>
+                <td class="hover-cell" data-value="{{ head_num[19] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[19] }}%);">セ</td>
+                <td class="hover-cell" data-value="{{ head_num[14] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[14] }}%);">ゲ</td>
+                <td class="hover-cell" data-value="{{ head_num[9] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[9] }}%);">ケ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ head_num[3] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[3] }}%);">エ</td>
+            </tr>
+            <tr>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ head_num[72] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[72] }}%);">ヲ</td>
+                <td class="hover-cell" data-value="{{ head_num[68] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[68] }}%);">ロ</td>
+                <td class="hover-cell" data-value="{{ head_num[63] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[63] }}%);">ヨ</td>
+                <td class="hover-cell" data-value="{{ head_num[60] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[60] }}%);">モ</td>
+                <td class="hover-cell" data-value="{{ head_num[55] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[55] }}%);">ポ</td>
+                <td class="hover-cell" data-value="{{ head_num[50] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[50] }}%);">ボ</td>
+                <td class="hover-cell" data-value="{{ head_num[45] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[45] }}%);">ホ</td>
+                <td class="hover-cell" data-value="{{ head_num[40] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[40] }}%);">ノ</td>
+                <td class="hover-cell" data-value="{{ head_num[35] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[35] }}%);">ド</td>
+                <td class="hover-cell" data-value="{{ head_num[30] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[30] }}%);">ト</td>
+                <td class="hover-cell" data-value="{{ head_num[25] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[25] }}%);">ゾ</td>
+                <td class="hover-cell" data-value="{{ head_num[20] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[20] }}%);">ソ</td>
+                <td class="hover-cell" data-value="{{ head_num[15] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[15] }}%);">ゴ</td>
+                <td class="hover-cell" data-value="{{ head_num[10] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[10] }}%);">コ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ head_num[4] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ head_color[4] }}%);">オ</td>
+            </tr>
+            <!-- 他の行も続ける -->
+        </table>
+        <br>
+        <table>
+            <h2 style="text-align: center;">末尾文字ヒートマップ</h2>
+            <tr>
+                <td class="hover-cell" data-value="{{ tail_num[73] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[73] }}%);">ン</td>
+                <td class="hover-cell" data-value="{{ tail_num[69] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[69] }}%);">ワ</td>
+                <td class="hover-cell" data-value="{{ tail_num[64] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[64] }}%);">ラ</td>
+                <td class="hover-cell" data-value="{{ tail_num[61] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[61] }}%);">ヤ</td>
+                <td class="hover-cell" data-value="{{ tail_num[56] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[56] }}%);">マ</td>
+                <td class="hover-cell" data-value="{{ tail_num[51] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[51] }}%);">パ</td>
+                <td class="hover-cell" data-value="{{ tail_num[46] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[46] }}%);">バ</td>
+                <td class="hover-cell" data-value="{{ tail_num[41] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[41] }}%);">ハ</td>
+                <td class="hover-cell" data-value="{{ tail_num[36] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[36] }}%);">ナ</td>
+                <td class="hover-cell" data-value="{{ tail_num[31] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[31] }}%);">ダ</td>
+                <td class="hover-cell" data-value="{{ tail_num[26] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[26] }}%);">タ</td>
+                <td class="hover-cell" data-value="{{ tail_num[21] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[21] }}%);">ザ</td>
+                <td class="hover-cell" data-value="{{ tail_num[16] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[16] }}%);">サ</td>
+                <td class="hover-cell" data-value="{{ tail_num[11] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[11] }}%);">ガ</td>
+                <td class="hover-cell" data-value="{{ tail_num[6] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[6] }}%);">カ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ tail_num[0] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[0] }}%);">ア</td>
+            </tr>
+            <tr>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ tail_num[70] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[70] }}%);">ヰ</td>
+                <td class="hover-cell" data-value="{{ tail_num[65] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[65] }}%);">リ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ tail_num[57] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[57] }}%);">ミ</td>
+                <td class="hover-cell" data-value="{{ tail_num[52] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[52] }}%);">ピ</td>
+                <td class="hover-cell" data-value="{{ tail_num[47] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[47] }}%);">ビ</td>
+                <td class="hover-cell" data-value="{{ tail_num[42] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[42] }}%);">ヒ</td>
+                <td class="hover-cell" data-value="{{ tail_num[37] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[37] }}%);">ニ</td>
+                <td class="hover-cell" data-value="{{ tail_num[32] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[32] }}%);">ヂ</td>
+                <td class="hover-cell" data-value="{{ tail_num[27] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[27] }}%);">チ</td>
+                <td class="hover-cell" data-value="{{ tail_num[22] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[22] }}%);">ジ</td>
+                <td class="hover-cell" data-value="{{ tail_num[17] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[17] }}%);">シ</td>
+                <td class="hover-cell" data-value="{{ tail_num[12] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[12] }}%);">ギ</td>
+                <td class="hover-cell" data-value="{{ tail_num[7] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[7] }}%);">キ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ tail_num[1] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[1] }}%);">イ</td>
+            </tr>
+            <tr>
+                <td style="background-color: #00000080;"></td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ tail_num[66] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[66] }}%);">ル</td>
+                <td class="hover-cell" data-value="{{ tail_num[62] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[62] }}%);">ユ</td>
+                <td class="hover-cell" data-value="{{ tail_num[58] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[58] }}%);">ム</td>
+                <td class="hover-cell" data-value="{{ tail_num[53] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[53] }}%);">プ</td>
+                <td class="hover-cell" data-value="{{ tail_num[48] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[48] }}%);">ブ</td>
+                <td class="hover-cell" data-value="{{ tail_num[43] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[43] }}%);">フ</td>
+                <td class="hover-cell" data-value="{{ tail_num[38] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[38] }}%);">ヌ</td>
+                <td class="hover-cell" data-value="{{ tail_num[33] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[33] }}%);">ヅ</td>
+                <td class="hover-cell" data-value="{{ tail_num[28] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[28] }}%);">ツ</td>
+                <td class="hover-cell" data-value="{{ tail_num[23] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[23] }}%);">ズ</td>
+                <td class="hover-cell" data-value="{{ tail_num[18] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[18] }}%);">ス</td>
+                <td class="hover-cell" data-value="{{ tail_num[13] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[13] }}%);">グ</td>
+                <td class="hover-cell" data-value="{{ tail_num[8] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[8] }}%);">ク</td>
+                <td class="hover-cell" data-value="{{ tail_num[5] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[5] }}%);">ヴ</td>
+                <td class="hover-cell" data-value="{{ tail_num[2] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[2] }}%);">ウ</td>
+            </tr>
+            <tr>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ tail_num[71] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[71] }}%);">ヱ</td>
+                <td class="hover-cell" data-value="{{ tail_num[67] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[67] }}%);">レ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ tail_num[59] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[59] }}%);">メ</td>
+                <td class="hover-cell" data-value="{{ tail_num[54] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[54] }}%);">ペ</td>
+                <td class="hover-cell" data-value="{{ tail_num[49] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[49] }}%);">ベ</td>
+                <td class="hover-cell" data-value="{{ tail_num[44] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[44] }}%);">ヘ</td>
+                <td class="hover-cell" data-value="{{ tail_num[39] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[39] }}%);">ネ</td>
+                <td class="hover-cell" data-value="{{ tail_num[34] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[34] }}%);">デ</td>
+                <td class="hover-cell" data-value="{{ tail_num[29] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[29] }}%);">テ</td>
+                <td class="hover-cell" data-value="{{ tail_num[24] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[24] }}%);">ゼ</td>
+                <td class="hover-cell" data-value="{{ tail_num[19] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[19] }}%);">セ</td>
+                <td class="hover-cell" data-value="{{ tail_num[14] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[14] }}%);">ゲ</td>
+                <td class="hover-cell" data-value="{{ tail_num[9] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[9] }}%);">ケ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ tail_num[3] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[3] }}%);">エ</td>
+            </tr>
+            <tr>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ tail_num[72] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[72] }}%);">ヲ</td>
+                <td class="hover-cell" data-value="{{ tail_num[68] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[68] }}%);">ロ</td>
+                <td class="hover-cell" data-value="{{ tail_num[63] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[63] }}%);">ヨ</td>
+                <td class="hover-cell" data-value="{{ tail_num[60] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[60] }}%);">モ</td>
+                <td class="hover-cell" data-value="{{ tail_num[55] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[55] }}%);">ポ</td>
+                <td class="hover-cell" data-value="{{ tail_num[50] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[50] }}%);">ボ</td>
+                <td class="hover-cell" data-value="{{ tail_num[45] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[45] }}%);">ホ</td>
+                <td class="hover-cell" data-value="{{ tail_num[40] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[40] }}%);">ノ</td>
+                <td class="hover-cell" data-value="{{ tail_num[35] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[35] }}%);">ド</td>
+                <td class="hover-cell" data-value="{{ tail_num[30] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[30] }}%);">ト</td>
+                <td class="hover-cell" data-value="{{ tail_num[25] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[25] }}%);">ゾ</td>
+                <td class="hover-cell" data-value="{{ tail_num[20] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[20] }}%);">ソ</td>
+                <td class="hover-cell" data-value="{{ tail_num[15] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[15] }}%);">ゴ</td>
+                <td class="hover-cell" data-value="{{ tail_num[10] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[10] }}%);">コ</td>
+                <td style="background-color: #00000080;"></td>
+                <td class="hover-cell" data-value="{{ tail_num[4] }}/{{ total }}"
+                    style="background-color: hsl(115, 100%, {{ tail_color[4] }}%);">オ</td>
+            </tr>
+            <!-- 他の行も続ける -->
+        </table>
+        <div class="tooltip"></div>
+
+        <script>
+            async function fetchData() {
+                const response = await fetch("/data");
+                const data = await response.json();
+                return data.map(item => ({
+                    x: item.timestamp,
+                    y: item.total_count
+                }));
+            }
+
+            async function renderChart() {
+                const ctx = document.getElementById("lineChart").getContext("2d");
+                const chartData = await fetchData();
+
+                new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: chartData.map(item => item.x),
+                        datasets: [{
+                            label: "データ総数の推移",
+                            data: chartData.map(item => item.y),
+                            borderColor: "blue",
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: "category",
+                                ticks: {
+                                    autoSkip: true, // 自動的に間引く
+                                    maxTicksLimit: 10 // 最大10個のラベルのみ表示
+                                }
+                            },
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            renderChart();
+
+            document.querySelectorAll('td').forEach(td => {
+                td.addEventListener('mouseenter', function () {
+                    const tooltip = document.querySelector('.tooltip');
+                    tooltip.textContent = this.getAttribute('data-value');
+                    tooltip.style.opacity = 1;
+                    tooltip.style.transform = 'translateY(-10px)'; // 上に移動
+                    tooltip.style.left = `${this.getBoundingClientRect().left + window.scrollX - 15}px`;
+                    tooltip.style.top = `${this.getBoundingClientRect().top + window.scrollY - 30}px`; // マウスの上側に表示
+                });
+
+                td.addEventListener('mouseleave', function () {
+                    const tooltip = document.querySelector('.tooltip');
+                    tooltip.style.opacity = 0;
+                    tooltip.style.transform = 'translateY(0)'; // 元の位置に戻す
+                });
+            });
+
+
+        </script>
+
+</body>
+
+</html>

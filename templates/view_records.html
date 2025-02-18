@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <button id="refine-toggle">絞</button>
+    <button id="sort-toggle">並</button>
+    <div class="background-washi">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>長～～～い言葉のデータベース一覧</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+        <div class="header">
+            <div class="title-db">
+                <a class="to-top" href="{{ url_for('index') }}">
+                    <!-- 画像引用元：https://ukiyoestock.com/jp/ -->
+                    <img class="title-logo" src="{{ url_for('static', filename='images/title_logo_jpn.png') }}"
+                        alt="title logo">
+                </a>
+            </div>
+            <div class="outline-of-app" style="display: flex; flex-direction: column;">
+                <div class="hit-count">
+                    {% if status_code == 0 %}
+                    <h3>現在10文字以上の単語を<span class="total-data">{{ total }}</span>件登録しています</h3>
+                    {% elif status_code == 1 %}
+                    <h3><span class="total-data">{{ total }}</span>件の単語がヒットしました</h3>
+                    {% else %}
+                    <h3><span class="total-data">{{ total }}</span>件の単語を{{ sort_style }}で表示しています</h3>
+                    {% endif %}
+                </div>
+                <nav id="head-sort">
+                    <div class="textBox">
+                        <div class="before2"></div>
+                        <div class="after2"></div>
+                        <p class="sorting-area">並べ替え選択欄</p>
+                        <form action="{{ url_for('sort_records') }}" method="POST">
+                            <div class="sorting-radio">
+                                <div class="sort-table">
+                                    <table class="sort-radio-table">
+                                        <tbody>
+                                            <tr class="sort-row">
+                                                <td class="radio-title" rowspan="2">単語</td>
+                                                <td class="radio-button"><input type="radio" name="sort_style"
+                                                        value="辞書順" id="radio_dict"><label for="radio_dict">辞書順</label>
+                                                </td>
+                                                <td class="radio-title" rowspan="2">長さ</td>
+                                                <td class="radio-button"><input type="radio" name="sort_style"
+                                                        value="長さ昇順" id="radio_len"><label for="radio_len">長さ昇順</label>
+                                                </td>
+                                                <td class="radio-title" rowspan="2">ID</td>
+                                                <td class="radio-button"><input type="radio" name="sort_style"
+                                                        value="登録順" id="radio_id"><label for="radio_id">登録順</label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="radio-button"><input type="radio" name="sort_style"
+                                                        value="辞書逆順" id="radio_dict_rev"><label
+                                                        for="radio_dict_rev">辞書逆順</label>
+                                                </td>
+                                                <td class="radio-button"><input type="radio" name="sort_style"
+                                                        value="長さ降順" id="radio_len_rev"><label
+                                                        for="radio_len_rev">長さ降順</label>
+                                                </td>
+                                                <td class="radio-button"><input type="radio" name="sort_style"
+                                                        value="登録逆順" id="radio_id_rev"><label
+                                                        for="radio_id_rev">登録逆順</label>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="sort-button-area">
+                                    <button class="sb" type="submit">並べ替え</button>
+                                    <!-- <input class="sort-button" type="image"
+                                    src="{{ url_for('static', filename='images/sort-button.png') }}" alt="並べ替えボタン"> -->
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="background-washi">
+        <div class="paginate_links">
+            <!-- {{ pagination.info }} -->
+            {{ pagination.links }}
+        </div>
+    </div>
+</head>
+
+<body>
+
+    <div class="background-washi">
+        <div class="sidebar">
+            <nav id="sidebar">
+                <form style="border: 7px double #C4C2AC;" action="{{ url_for('refine_records') }}" method="POST">
+                    <p class="refine-area">絞り込み検索欄</p>
+                    <p class="refine-head-text">先頭文字の選択</p>
+                    <table class="refine-head" align="center" border="2">
+                        <tr>
+                            <td><label for="check_head_a"><input type="checkbox" name="head_char" value="ア"
+                                        id="check_head_a">ア</label></td>
+                            <td><label for="check_head_i"><input type="checkbox" name="head_char" value="イ"
+                                        id="check_head_i">イ</label></td>
+                            <td><label for="check_head_u"><input type="checkbox" name="head_char" value="ウ"
+                                        id="check_head_u">ウ</label></td>
+                            <td><label for="check_head_e"><input type="checkbox" name="head_char" value="エ"
+                                        id="check_head_e">エ</label></td>
+                            <td><label for="check_head_o"><input type="checkbox" name="head_char" value="オ"
+                                        id="check_head_o">オ</label></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label for="check_head_vu"><input type="checkbox" name="head_char" value="ヴ"
+                                        id="check_head_vu">ヴ</label></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_ka"><input type="checkbox" name="head_char" value="カ"
+                                        id="check_head_ka">カ</label></td>
+                            <td><label for="check_head_ki"><input type="checkbox" name="head_char" value="キ"
+                                        id="check_head_ki">キ</label></td>
+                            <td><label for="check_head_ku"><input type="checkbox" name="head_char" value="ク"
+                                        id="check_head_ku">ク</label></td>
+                            <td><label for="check_head_ke"><input type="checkbox" name="head_char" value="ケ"
+                                        id="check_head_ke">ケ</label></td>
+                            <td><label for="check_head_ko"><input type="checkbox" name="head_char" value="コ"
+                                        id="check_head_ko">コ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_ga"><input type="checkbox" name="head_char" value="ガ"
+                                        id="check_head_ga">ガ</label></td>
+                            <td><label for="check_head_gi"><input type="checkbox" name="head_char" value="ギ"
+                                        id="check_head_gi">ギ</label></td>
+                            <td><label for="check_head_gu"><input type="checkbox" name="head_char" value="グ"
+                                        id="check_head_gu">グ</label></td>
+                            <td><label for="check_head_ge"><input type="checkbox" name="head_char" value="ゲ"
+                                        id="check_head_ge">ゲ</label></td>
+                            <td><label for="check_head_go"><input type="checkbox" name="head_char" value="ゴ"
+                                        id="check_head_go">ゴ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_sa"><input type="checkbox" name="head_char" value="サ"
+                                        id="check_head_sa">サ</label></td>
+                            <td><label for="check_head_shi"><input type="checkbox" name="head_char" value="シ"
+                                        id="check_head_shi">シ</label></td>
+                            <td><label for="check_head_su"><input type="checkbox" name="head_char" value="ス"
+                                        id="check_head_su">ス</label></td>
+                            <td><label for="check_head_se"><input type="checkbox" name="head_char" value="セ"
+                                        id="check_head_se">セ</label></td>
+                            <td><label for="check_head_so"><input type="checkbox" name="head_char" value="ソ"
+                                        id="check_head_so">ソ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_za"><input type="checkbox" name="head_char" value="ザ"
+                                        id="check_head_za">ザ</label></td>
+                            <td><label for="check_head_ji"><input type="checkbox" name="head_char" value="ジ"
+                                        id="check_head_ji">ジ</label></td>
+                            <td><label for="check_head_zu"><input type="checkbox" name="head_char" value="ズ"
+                                        id="check_head_zu">ズ</label></td>
+                            <td><label for="check_head_ze"><input type="checkbox" name="head_char" value="ゼ"
+                                        id="check_head_ze">ゼ</label></td>
+                            <td><label for="check_head_zo"><input type="checkbox" name="head_char" value="ゾ"
+                                        id="check_head_zo">ゾ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_ta"><input type="checkbox" name="head_char" value="タ"
+                                        id="check_head_ta">タ</label></td>
+                            <td><label for="check_head_chi"><input type="checkbox" name="head_char" value="チ"
+                                        id="check_head_chi">チ</label></td>
+                            <td><label for="check_head_tsu"><input type="checkbox" name="head_char" value="ツ"
+                                        id="check_head_tsu">ツ</label></td>
+                            <td><label for="check_head_te"><input type="checkbox" name="head_char" value="テ"
+                                        id="check_head_te">テ</label></td>
+                            <td><label for="check_head_to"><input type="checkbox" name="head_char" value="ト"
+                                        id="check_head_to">ト</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_da"><input type="checkbox" name="head_char" value="ダ"
+                                        id="check_head_da">ダ</label></td>
+                            <td><label for="check_head_ji_d"><input type="checkbox" name="head_char" value="ヂ"
+                                        id="check_head_ji_d">ヂ</label></td>
+                            <td><label for="check_head_du"><input type="checkbox" name="head_char" value="ヅ"
+                                        id="check_head_du">ヅ</label></td>
+                            <td><label for="check_head_de"><input type="checkbox" name="head_char" value="デ"
+                                        id="check_head_de">デ</label></td>
+                            <td><label for="check_head_do"><input type="checkbox" name="head_char" value="ド"
+                                        id="check_head_do">ド</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_na"><input type="checkbox" name="head_char" value="ナ"
+                                        id="check_head_na">ナ</label></td>
+                            <td><label for="check_head_ni"><input type="checkbox" name="head_char" value="ニ"
+                                        id="check_head_ni">ニ</label></td>
+                            <td><label for="check_head_nu"><input type="checkbox" name="head_char" value="ヌ"
+                                        id="check_head_nu">ヌ</label></td>
+                            <td><label for="check_head_ne"><input type="checkbox" name="head_char" value="ネ"
+                                        id="check_head_ne">ネ</label></td>
+                            <td><label for="check_head_no"><input type="checkbox" name="head_char" value="ノ"
+                                        id="check_head_no">ノ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_ha"><input type="checkbox" name="head_char" value="ハ"
+                                        id="check_head_ha">ハ</label></td>
+                            <td><label for="check_head_hi"><input type="checkbox" name="head_char" value="ヒ"
+                                        id="check_head_hi">ヒ</label></td>
+                            <td><label for="check_head_fu"><input type="checkbox" name="head_char" value="フ"
+                                        id="check_head_fu">フ</label></td>
+                            <td><label for="check_head_he"><input type="checkbox" name="head_char" value="ヘ"
+                                        id="check_head_he">ヘ</label></td>
+                            <td><label for="check_head_ho"><input type="checkbox" name="head_char" value="ホ"
+                                        id="check_head_ho">ホ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_ba"><input type="checkbox" name="head_char" value="バ"
+                                        id="check_head_ba">バ</label></td>
+                            <td><label for="check_head_bi"><input type="checkbox" name="head_char" value="ビ"
+                                        id="check_head_bi">ビ</label></td>
+                            <td><label for="check_head_bu"><input type="checkbox" name="head_char" value="ブ"
+                                        id="check_head_bu">ブ</label></td>
+                            <td><label for="check_head_be"><input type="checkbox" name="head_char" value="ベ"
+                                        id="check_head_be">ベ</label></td>
+                            <td><label for="check_head_bo"><input type="checkbox" name="head_char" value="ボ"
+                                        id="check_head_bo">ボ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_pa"><input type="checkbox" name="head_char" value="パ"
+                                        id="check_head_pa">パ</label></td>
+                            <td><label for="check_head_pi"><input type="checkbox" name="head_char" value="ピ"
+                                        id="check_head_pi">ピ</label></td>
+                            <td><label for="check_head_pu"><input type="checkbox" name="head_char" value="プ"
+                                        id="check_head_pu">プ</label></td>
+                            <td><label for="check_head_pe"><input type="checkbox" name="head_char" value="ペ"
+                                        id="check_head_pe">ペ</label></td>
+                            <td><label for="check_head_po"><input type="checkbox" name="head_char" value="ポ"
+                                        id="check_head_po">ポ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_ma"><input type="checkbox" name="head_char" value="マ"
+                                        id="check_head_ma">マ</label></td>
+                            <td><label for="check_head_mi"><input type="checkbox" name="head_char" value="ミ"
+                                        id="check_head_mi">ミ</label></td>
+                            <td><label for="check_head_mu"><input type="checkbox" name="head_char" value="ム"
+                                        id="check_head_mu">ム</label></td>
+                            <td><label for="check_head_me"><input type="checkbox" name="head_char" value="メ"
+                                        id="check_head_me">メ</label></td>
+                            <td><label for="check_head_mo"><input type="checkbox" name="head_char" value="モ"
+                                        id="check_head_mo">モ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_ya"><input type="checkbox" name="head_char" value="ヤ"
+                                        id="check_head_ya">ヤ</label></td>
+                            <td></td>
+                            <td><label for="check_head_yu"><input type="checkbox" name="head_char" value="ユ"
+                                        id="check_head_yu">ユ</label></td>
+                            <td></td>
+                            <td><label for="check_head_yo"><input type="checkbox" name="head_char" value="ヨ"
+                                        id="check_head_yo">ヨ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_ra"><input type="checkbox" name="head_char" value="ラ"
+                                        id="check_head_ra">ラ</label></td>
+                            <td><label for="check_head_ri"><input type="checkbox" name="head_char" value="リ"
+                                        id="check_head_ri">リ</label></td>
+                            <td><label for="check_head_ru"><input type="checkbox" name="head_char" value="ル"
+                                        id="check_head_ru">ル</label></td>
+                            <td><label for="check_head_re"><input type="checkbox" name="head_char" value="レ"
+                                        id="check_head_re">レ</label></td>
+                            <td><label for="check_head_ro"><input type="checkbox" name="head_char" value="ロ"
+                                        id="check_head_ro">ロ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_wa"><input type="checkbox" name="head_char" value="ワ"
+                                        id="check_head_wa">ワ</label></td>
+                            <td><label for="check_head_wi"><input type="checkbox" name="head_char" value="ヰ"
+                                        id="check_head_wi">ヰ</label></td>
+                            <td></td>
+                            <td><label for="check_head_we"><input type="checkbox" name="head_char" value="ヱ"
+                                        id="check_head_we">ヱ</label></td>
+                            <td><label for="check_head_wo"><input type="checkbox" name="head_char" value="ヲ"
+                                        id="check_head_wo">ヲ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_head_n"><input type="checkbox" name="head_char" value="ン"
+                                        id="check_head_n">ン</label></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <!-- <p style="text-align: right">からはじまる</p> -->
+                    <p class="refine-tail-text">末尾文字の選択</p>
+                    <table class="refine-tail" align="center" border="2">
+                        <tr>
+                            <td><label for="check_tail_a"><input type="checkbox" name="tail_char" value="ア"
+                                        id="check_tail_a">ア</label></td>
+                            <td><label for="check_tail_i"><input type="checkbox" name="tail_char" value="イ"
+                                        id="check_tail_i">イ</label></td>
+                            <td><label for="check_tail_u"><input type="checkbox" name="tail_char" value="ウ"
+                                        id="check_tail_u">ウ</label></td>
+                            <td><label for="check_tail_e"><input type="checkbox" name="tail_char" value="エ"
+                                        id="check_tail_e">エ</label></td>
+                            <td><label for="check_tail_o"><input type="checkbox" name="tail_char" value="オ"
+                                        id="check_tail_o">オ</label></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label for="check_tail_vu"><input type="checkbox" name="tail_char" value="ヴ"
+                                        id="check_tail_vu">ヴ</label></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_ka"><input type="checkbox" name="tail_char" value="カ"
+                                        id="check_tail_ka">カ</label></td>
+                            <td><label for="check_tail_ki"><input type="checkbox" name="tail_char" value="キ"
+                                        id="check_tail_ki">キ</label></td>
+                            <td><label for="check_tail_ku"><input type="checkbox" name="tail_char" value="ク"
+                                        id="check_tail_ku">ク</label></td>
+                            <td><label for="check_tail_ke"><input type="checkbox" name="tail_char" value="ケ"
+                                        id="check_tail_ke">ケ</label></td>
+                            <td><label for="check_tail_ko"><input type="checkbox" name="tail_char" value="コ"
+                                        id="check_tail_ko">コ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_ga"><input type="checkbox" name="tail_char" value="ガ"
+                                        id="check_tail_ga">ガ</label></td>
+                            <td><label for="check_tail_gi"><input type="checkbox" name="tail_char" value="ギ"
+                                        id="check_tail_gi">ギ</label></td>
+                            <td><label for="check_tail_gu"><input type="checkbox" name="tail_char" value="グ"
+                                        id="check_tail_gu">グ</label></td>
+                            <td><label for="check_tail_ge"><input type="checkbox" name="tail_char" value="ゲ"
+                                        id="check_tail_ge">ゲ</label></td>
+                            <td><label for="check_tail_go"><input type="checkbox" name="tail_char" value="ゴ"
+                                        id="check_tail_go">ゴ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_sa"><input type="checkbox" name="tail_char" value="サ"
+                                        id="check_tail_sa">サ</label></td>
+                            <td><label for="check_tail_shi"><input type="checkbox" name="tail_char" value="シ"
+                                        id="check_tail_shi">シ</label></td>
+                            <td><label for="check_tail_su"><input type="checkbox" name="tail_char" value="ス"
+                                        id="check_tail_su">ス</label></td>
+                            <td><label for="check_tail_se"><input type="checkbox" name="tail_char" value="セ"
+                                        id="check_tail_se">セ</label></td>
+                            <td><label for="check_tail_so"><input type="checkbox" name="tail_char" value="ソ"
+                                        id="check_tail_so">ソ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_za"><input type="checkbox" name="tail_char" value="ザ"
+                                        id="check_tail_za">ザ</label></td>
+                            <td><label for="check_tail_ji"><input type="checkbox" name="tail_char" value="ジ"
+                                        id="check_tail_ji">ジ</label></td>
+                            <td><label for="check_tail_zu"><input type="checkbox" name="tail_char" value="ズ"
+                                        id="check_tail_zu">ズ</label></td>
+                            <td><label for="check_tail_ze"><input type="checkbox" name="tail_char" value="ゼ"
+                                        id="check_tail_ze">ゼ</label></td>
+                            <td><label for="check_tail_zo"><input type="checkbox" name="tail_char" value="ゾ"
+                                        id="check_tail_zo">ゾ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_ta"><input type="checkbox" name="tail_char" value="タ"
+                                        id="check_tail_ta">タ</label></td>
+                            <td><label for="check_tail_chi"><input type="checkbox" name="tail_char" value="チ"
+                                        id="check_tail_chi">チ</label></td>
+                            <td><label for="check_tail_tsu"><input type="checkbox" name="tail_char" value="ツ"
+                                        id="check_tail_tsu">ツ</label></td>
+                            <td><label for="check_tail_te"><input type="checkbox" name="tail_char" value="テ"
+                                        id="check_tail_te">テ</label></td>
+                            <td><label for="check_tail_to"><input type="checkbox" name="tail_char" value="ト"
+                                        id="check_tail_to">ト</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_da"><input type="checkbox" name="tail_char" value="ダ"
+                                        id="check_tail_da">ダ</label></td>
+                            <td><label for="check_tail_ji_d"><input type="checkbox" name="tail_char" value="ヂ"
+                                        id="check_tail_ji_d">ヂ</label></td>
+                            <td><label for="check_tail_du"><input type="checkbox" name="tail_char" value="ヅ"
+                                        id="check_tail_du">ヅ</label></td>
+                            <td><label for="check_tail_de"><input type="checkbox" name="tail_char" value="デ"
+                                        id="check_tail_de">デ</label></td>
+                            <td><label for="check_tail_do"><input type="checkbox" name="tail_char" value="ド"
+                                        id="check_tail_do">ド</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_na"><input type="checkbox" name="tail_char" value="ナ"
+                                        id="check_tail_na">ナ</label></td>
+                            <td><label for="check_tail_ni"><input type="checkbox" name="tail_char" value="ニ"
+                                        id="check_tail_ni">ニ</label></td>
+                            <td><label for="check_tail_nu"><input type="checkbox" name="tail_char" value="ヌ"
+                                        id="check_tail_nu">ヌ</label></td>
+                            <td><label for="check_tail_ne"><input type="checkbox" name="tail_char" value="ネ"
+                                        id="check_tail_ne">ネ</label></td>
+                            <td><label for="check_tail_no"><input type="checkbox" name="tail_char" value="ノ"
+                                        id="check_tail_no">ノ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_ha"><input type="checkbox" name="tail_char" value="ハ"
+                                        id="check_tail_ha">ハ</label></td>
+                            <td><label for="check_tail_hi"><input type="checkbox" name="tail_char" value="ヒ"
+                                        id="check_tail_hi">ヒ</label></td>
+                            <td><label for="check_tail_fu"><input type="checkbox" name="tail_char" value="フ"
+                                        id="check_tail_fu">フ</label></td>
+                            <td><label for="check_tail_he"><input type="checkbox" name="tail_char" value="ヘ"
+                                        id="check_tail_he">ヘ</label></td>
+                            <td><label for="check_tail_ho"><input type="checkbox" name="tail_char" value="ホ"
+                                        id="check_tail_ho">ホ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_ba"><input type="checkbox" name="tail_char" value="バ"
+                                        id="check_tail_ba">バ</label></td>
+                            <td><label for="check_tail_bi"><input type="checkbox" name="tail_char" value="ビ"
+                                        id="check_tail_bi">ビ</label></td>
+                            <td><label for="check_tail_bu"><input type="checkbox" name="tail_char" value="ブ"
+                                        id="check_tail_bu">ブ</label></td>
+                            <td><label for="check_tail_be"><input type="checkbox" name="tail_char" value="ベ"
+                                        id="check_tail_be">ベ</label></td>
+                            <td><label for="check_tail_bo"><input type="checkbox" name="tail_char" value="ボ"
+                                        id="check_tail_bo">ボ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_pa"><input type="checkbox" name="tail_char" value="パ"
+                                        id="check_tail_pa">パ</label></td>
+                            <td><label for="check_tail_pi"><input type="checkbox" name="tail_char" value="ピ"
+                                        id="check_tail_pi">ピ</label></td>
+                            <td><label for="check_tail_pu"><input type="checkbox" name="tail_char" value="プ"
+                                        id="check_tail_pu">プ</label></td>
+                            <td><label for="check_tail_pe"><input type="checkbox" name="tail_char" value="ペ"
+                                        id="check_tail_pe">ペ</label></td>
+                            <td><label for="check_tail_po"><input type="checkbox" name="tail_char" value="ポ"
+                                        id="check_tail_po">ポ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_ma"><input type="checkbox" name="tail_char" value="マ"
+                                        id="check_tail_ma">マ</label></td>
+                            <td><label for="check_tail_mi"><input type="checkbox" name="tail_char" value="ミ"
+                                        id="check_tail_mi">ミ</label></td>
+                            <td><label for="check_tail_mu"><input type="checkbox" name="tail_char" value="ム"
+                                        id="check_tail_mu">ム</label></td>
+                            <td><label for="check_tail_me"><input type="checkbox" name="tail_char" value="メ"
+                                        id="check_tail_me">メ</label></td>
+                            <td><label for="check_tail_mo"><input type="checkbox" name="tail_char" value="モ"
+                                        id="check_tail_mo">モ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_ya"><input type="checkbox" name="tail_char" value="ヤ"
+                                        id="check_tail_ya">ヤ</label></td>
+                            <td></td>
+                            <td><label for="check_tail_yu"><input type="checkbox" name="tail_char" value="ユ"
+                                        id="check_tail_yu">ユ</label></td>
+                            <td></td>
+                            <td><label for="check_tail_yo"><input type="checkbox" name="tail_char" value="ヨ"
+                                        id="check_tail_yo">ヨ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_ra"><input type="checkbox" name="tail_char" value="ラ"
+                                        id="check_tail_ra">ラ</label></td>
+                            <td><label for="check_tail_ri"><input type="checkbox" name="tail_char" value="リ"
+                                        id="check_tail_ri">リ</label></td>
+                            <td><label for="check_tail_ru"><input type="checkbox" name="tail_char" value="ル"
+                                        id="check_tail_ru">ル</label></td>
+                            <td><label for="check_tail_re"><input type="checkbox" name="tail_char" value="レ"
+                                        id="check_tail_re">レ</label></td>
+                            <td><label for="check_tail_ro"><input type="checkbox" name="tail_char" value="ロ"
+                                        id="check_tail_ro">ロ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_wa"><input type="checkbox" name="tail_char" value="ワ"
+                                        id="check_tail_wa">ワ</label></td>
+                            <td><label for="check_tail_wi"><input type="checkbox" name="tail_char" value="ヰ"
+                                        id="check_tail_wi">ヰ</label></td>
+                            <td></td>
+                            <td><label for="check_tail_we"><input type="checkbox" name="tail_char" value="ヱ"
+                                        id="check_tail_we">ヱ</label></td>
+                            <td><label for="check_tail_wo"><input type="checkbox" name="tail_char" value="ヲ"
+                                        id="check_tail_wo">ヲ</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="check_tail_n"><input type="checkbox" name="tail_char" value="ン"
+                                        id="check_tail_n">ン</label></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <!-- <p style="text-align: right">でおわる</p> -->
+                    <p class="refine-length-text">単語長の範囲</p>
+                    <div class="slider-container">
+                        <!-- 2つのThumbを持つ範囲スライダー -->
+                        <input type="range" id="minRange" min="10" max="31" name="slider-min" value="10" step="1">
+                        <input type="range" id="maxRange" min="10" max="31" name="slider-max" value="31" step="1">
+                        <div class="range-track" id="rangeTrack"></div>
+                        <div class="range-values">
+                            <br>
+                            <span id="rangeOutput"></span>
+                        </div>
+                    </div>
+                    <div class="user_input" style="text-align: center;">
+                        <p class="refine-length-text">文字列検索</p>
+                        <input type="text" name="user_input" style="opacity: 0.6;">
+                    </div>
+                    <hr style="border-bottom: 7px double #4f805991; margin: 6% 0;">
+                    <div class="refine-button">
+                        <button class="rb" type="submit">絞り込み</button>
+                        <!-- <input type="image" src="{{ url_for('static', filename='images/refine-button.png') }}" alt="送信ボタン"
+                    style="width: 50%; margin: 0 auto; display: block;"> -->
+                    </div>
+                    <hr style="border-bottom: 7px double #4f805991; margin: 6% 0;">
+                </form>
+            </nav>
+        </div>
+        <div class="contents">
+            <table class="word-table" align="center" border="1" bgcolor="white">
+                <colgroup>
+                    <col style="width: 4%;">
+                    <col style="width: 42%;">
+                    <col style="width: 40%;">
+                    <col style="width: 6%;">
+                    <col style="width: 4%;">
+                    <col style="width: 4%;">
+                </colgroup>
+                <thead>
+                    <tr class="table-header">
+                        <th>ID</th>
+                        <th>長～～～い単語</th>
+                        <th>フリガナ</th>
+                        <th>長さ</th>
+                        <th>頭</th>
+                        <th>尻</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in records %}
+                    <tr>
+                        <td align="center">{{ row[0] }}</td>
+                        <td>&thinsp;{{ row[1] }}</td>
+                        <td>&thinsp;{{ row[2] }}</td>
+                        <td align="center">{{ row[3] }}</td>
+                        <td align="center">{{ row[4] }}</td>
+                        <td align="center">{{ row[5] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <script>
+        const minRange = document.getElementById('minRange');
+        const maxRange = document.getElementById('maxRange');
+        const rangeTrack = document.getElementById('rangeTrack');
+        const rangeOutput = document.getElementById('rangeOutput');
+
+        // 初期化: スライダーのトラックと表示を更新
+        updateTrack();
+        updateRangeDisplay();
+
+        // 値が変わったときの処理
+        minRange.addEventListener('input', update);
+        maxRange.addEventListener('input', update);
+
+        function update() {
+            // minRangeの値がmaxRangeより大きい場合、調整
+            if (parseInt(minRange.value) > parseInt(maxRange.value)) {
+                minRange.value = maxRange.value;
+            }
+            updateTrack();
+            updateRangeDisplay();
+        }
+
+        function updateTrack() {
+            const minValue = ((minRange.value - 10) / (minRange.max - 10)) * 100; // rangeが10-31の為10引いてから割合を計算する
+            const maxValue = ((maxRange.value - 10) / (maxRange.max - 10)) * 100;
+            rangeTrack.style.left = `${minValue + 2}%`;
+            rangeTrack.style.width = `${maxValue - 2 - minValue}%`;
+        }
+
+        function updateRangeDisplay() {
+            if (maxRange.value == 31) {
+                rangeOutput.textContent = `${minRange.value}文字以上の単語`;
+            }
+            else if (minRange.value == maxRange.value) {
+                rangeOutput.textContent = `${minRange.value}文字の単語`;
+            }
+            else {
+                rangeOutput.textContent = `${minRange.value}文字以上${maxRange.value}文字以下の単語`;
+            }
+        }
+
+
+        document.getElementById('refine-toggle').addEventListener('click', function () {
+            var sidebar = document.getElementById('sidebar');
+            var headerContent = document.getElementById('head-sort');
+            if (sidebar.style.left === '0px') {
+                sidebar.style.left = '-400px';  // サイドバーを隠す
+            } else {
+                sidebar.style.left = '0px';  // サイドバーを表示する
+            }
+            sidebar.classList.toggle('visible'); // サイドバーの表示を切り替える
+            if (sidebar.classList.contains('visible')) {
+                sidebar.style.zIndex = 2; // サイドバーを前面に表示
+                headerContent.style.zIndex = 1; // ヘッダーを背面に設定
+            } else {
+                sidebar.style.zIndex = 1; // サイドバーを背面に設定
+            }
+        });
+
+        document.getElementById('sort-toggle').addEventListener('click', function () {
+            var headerContent = document.getElementById('head-sort');
+            if (headerContent.style.top === '0px') {
+                headerContent.style.top = '-400px';  // サイドバーを隠す
+            } else {
+                headerContent.style.top = '0px';  // サイドバーを表示する
+            }
+            headerContent.classList.toggle('visible'); // ヘッダーの表示を切り替える
+            if (headerContent.classList.contains('visible')) {
+                headerContent.style.zIndex = 2; // ヘッダーを前面に表示
+                sidebar.style.zIndex = 1; // サイドバーを背面に設定
+            } else {
+                headerContent.style.zIndex = 1; // ヘッダーを背面に設定
+            }
+        });
+    </script>
+
+
+
+
+
+</body>
+
+</html>

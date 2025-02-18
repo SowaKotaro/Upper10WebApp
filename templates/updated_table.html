@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>入力確認画面</title>
+    <style>
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        th,
+        td {
+            border: 1px solid #000000;
+            padding: 5px;
+            text-align: center;
+        }
+
+        td {
+            cursor: pointer;
+        }
+
+        textarea {
+            /* 枠線を消す */
+            border: none;
+
+            /* 右下の//(サイズ変更機能)を消す */
+            resize: none;
+
+            /* フォーカスした際の青い枠線を消す */
+            outline: none;
+
+            /* widthを100%にしておくことで、レスポンシブ対応ができます。 */
+            width: 100%;
+
+            /* 背景を等価 */
+            background-color: transparent;
+
+            font-size: large;
+
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 style="text-align:center;">データ編集内容</h2>
+
+    <table id="wordTable">
+        <thead>
+            <tr>
+                <th>なっげぇ～単語</th>
+                <th>フリガナ</th>
+                <th>長さ</th>
+                <th>頭</th>
+                <th>尻</th>
+                <th>OLD<br>STATUS<br>CODE</th>
+                <th>CURRENT<br>STATUS<br>CODE</th>
+            </tr>
+        </thead>
+        <form action="{{ url_for('final_table') }}" method="POST">
+            <tbody>
+                {% for row in records %}
+                <tr>
+                    {% if row[6] == 1 %}
+                    <td bgcolor="#15FA00">
+                        <textarea rows="2" cols="40" name="row-{{ loop.index0 }}-0">{{ row[0] }}</textarea>
+                    </td>
+                    <td bgcolor="#15FA00">
+                        <textarea rows="2" cols="40" name="row-{{ loop.index0 }}-1">{{ row[1] }}</textarea>
+                    </td>
+                    <td bgcolor="#15FA00">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-2">{{ row[2] }}</textarea>
+                    </td>
+                    <td bgcolor="#15FA00">
+                        <textarea rows="1" cols="1" name="row-{{ loop.index0 }}-3">{{ row[3] }}</textarea>
+                    </td>
+                    <td bgcolor="#15FA00">
+                        <textarea rows="1" cols="1" name="row-{{ loop.index0 }}-4">{{ row[4] }}</textarea>
+                    </td>
+                    <td bgcolor="#15FA00">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-5">{{ row[5] }}</textarea>
+                    </td>
+                    <td bgcolor="#15FA00">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-6">{{ row[6] }}</textarea>
+                    </td>
+                    {% elif row[6] == 2 %}
+                    <td bgcolor="#FAF316">
+                        <textarea rows="2" cols="40" name="row-{{ loop.index0 }}-0">{{ row[0] }}</textarea>
+                    </td>
+                    <td bgcolor="#FAF316">
+                        <textarea rows="2" cols="40" name="row-{{ loop.index0 }}-1">{{ row[1] }}</textarea>
+                    </td>
+                    <td bgcolor="#FAF316">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-2">{{ row[2] }}</textarea>
+                    </td>
+                    <td bgcolor="#FAF316">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-3">{{ row[3] }}</textarea>
+                    </td>
+                    <td bgcolor="#FAF316">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-4">{{ row[4] }}</textarea>
+                    </td>
+                    <td bgcolor="#FAF316">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-5">{{ row[5] }}</textarea>
+                    </td>
+                    <td bgcolor="#FAF316">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-6">{{ row[6] }}</textarea>
+                    </td>
+                    {% elif row[6] == -1 %}
+                    <td bgcolor="#FA000B">
+                        <textarea rows="2" cols="40" name="row-{{ loop.index0 }}-0">{{ row[0] }}</textarea>
+                    </td>
+                    <td bgcolor="#FA000B">
+                        <textarea rows="2" cols="40" name="row-{{ loop.index0 }}-1">{{ row[1] }}</textarea>
+                    </td>
+                    <td bgcolor="#FA000B">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-2">{{ row[2] }}</textarea>
+                    </td>
+                    <td bgcolor="#FA000B">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-3">{{ row[3] }}</textarea>
+                    </td>
+                    <td bgcolor="#FA000B">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-4">{{ row[4] }}</textarea>
+                    </td>
+                    <td bgcolor="#FA000B">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-5">{{ row[5] }}</textarea>
+                    </td>
+                    <td bgcolor="#FA000B">
+                        <textarea rows="1" cols="2" name="row-{{ loop.index0 }}-6">{{ row[6] }}</textarea>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+            <button type="submit">Submit</button>
+        </form>
+    </table>
+</body>
+
+</html>

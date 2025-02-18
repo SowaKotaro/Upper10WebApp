@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>単語リスト</title>
+    <style>
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            margin-left: 10%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function copyColumnText() {
+            // 単語列（1列目）のデータを取得
+            let words = [];
+            document.querySelectorAll("tbody tr td:first-child").forEach(td => {
+                words.push(td.textContent);
+            });
+
+            // 改行区切りでコピー
+            let textToCopy = words.join("\n");
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("単語リストをコピーしました！\n\n");
+            });
+        }
+    </script>
+</head>
+<body>
+    {% if mode == 'view' %}
+    <h1 style="text-align: center;">未登録のリクエスト一覧</h1>
+    {% else %}
+    <h1 style="text-align: center;">未登録のリクエスト一覧</h1>
+    <button class="btn" onclick="copyColumnText()">単語リストをコピー</button>
+    {% endif %}
+    <table>
+        <thead>
+            <tr>
+                <th>単語</th>
+                <th>フリガナ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in request_data %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if mode == 'view' %}
+    <p style="text-align: center;">リクエストを登録するには管理者ページ「リクエストを登録」ボタンから</p>
+    {% else %}
+    <form method="POST" name="a_form" action="{{ url_for('upload') }}" target="_blank">
+        <button class="btn" type="submit">アップロードページへ移動する</button>
+    </form>
+    {% endif %}
+</body>
+</html>

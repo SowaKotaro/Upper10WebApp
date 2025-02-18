@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>単語のリクエスト</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manual.css') }}">
+    <style>
+        /* テーブル全体のスタイル */
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        /* ヘッダー列のデザイン */
+        th {
+            background-color: #808080;
+            /* 背景色 */
+            color: white;
+            /* 文字色 */
+            padding: 10px;
+            text-align: center;
+            width: 45%;
+        }
+
+        /* "削除"列の特別なデザイン */
+        th.delete-column {
+            background-color: #ffffff00;
+            /* 赤い背景 */
+            color: rgb(0, 0, 0);
+            /* 文字色 */
+            font-weight: bold;
+            width: 10%;
+        }
+
+        /* テーブルセルのスタイル */
+        td {
+            border: 1px solid #ddd;
+            background-color: white;
+            padding: 8px;
+            text-align: center;
+        }
+
+        td.delete-column,
+        td.delete-column_checked {
+            border: 1px solid #ddd;
+            background-color: rgba(255, 255, 255, 0);
+            padding: 8px;
+            text-align: center;
+        }
+
+        /* 削除ボタンのスタイル */
+        button.removeRowButton,
+        button.removeRowButton_checked {
+            background-color: #ffffff;
+            color: rgb(0, 0, 0);
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        /* 削除ボタンのホバーエフェクト */
+        button.removeRowButton:hover {
+            background-color: #959595;
+        }
+
+        /* ボタンコンテナのデザイン */
+        .button-container,
+        .submit-container {
+            margin: 20px 0;
+            text-align: center;
+            /* ボタンを中央に配置 */
+        }
+
+        /* ボタンのスタイル */
+        #addRowButton {
+            background-color: #4CAF50;
+            /* 緑の背景 */
+            color: white;
+            /* 文字色は白 */
+            border: none;
+            padding: 10px 20px;
+            /* 余白 */
+            font-size: 18px;
+            /* 文字の大きさ */
+            border-radius: 5px;
+            /* 丸みのある角 */
+            cursor: pointer;
+            /* カーソルをポインターに */
+            transition: background-color 0.3s ease;
+            /* 背景色の遷移 */
+        }
+
+        /* ボタンのホバー時のスタイル */
+        #addRowButton:hover {
+            background-color: #45a049;
+            /* ホバー時に少し暗くする */
+        }
+
+        /* ボタンをクリックしたときのアクティブな状態 */
+        #addRowButton:active {
+            background-color: #388e3c;
+            /* クリック時の色 */
+        }
+
+
+        /* 送信ボタンのスタイル */
+        #submitButton {
+            background-color: #1e5327b7;
+            /* 緑の背景 */
+            color: rgb(255, 255, 255);
+            /* 文字色は白 */
+            border: none;
+            padding: 10px 20px;
+            /* 余白 */
+            font-size: 18px;
+            /* 文字の大きさ */
+            border-radius: 5px;
+            /* 丸みのある角 */
+            cursor: pointer;
+            /* カーソルをポインターに */
+        }
+
+        ul {
+            padding-left: 0;
+            text-align: center;
+        }
+
+        li {
+            list-style: none;
+            color: #ff0000;
+            font-size: large;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-washi">
+        <div>
+            <a class="to-top" href="{{ url_for('index') }}">
+                <!-- 画像引用元：https://ukiyoestock.com/jp/ -->
+                <img style="width: 20%;" class="title-logo"
+                    src="{{ url_for('static', filename='images/title_logo_jpn.png') }}" alt="title logo">
+            </a>
+        </div>
+        <h1 style="text-align: center;">単語リクエストフォーム</h1>
+        <h2 style="text-align: center;">リクエストしたい単語とその読み（カタカナ）を埋めて送信してください</h2>
+        <h3 style="text-align: center;">※リクエストされた単語が必ず登録されるとは限りません</h3>
+        {% if code == 0 %}
+        <form action="{{ url_for('write_request') }}" method="POST" id="myForm">
+            <table id="dynamicTable">
+                <thead>
+                    <tr>
+                        <!-- 削除列のヘッダーに特別なクラスを追加 -->
+                        <th class="delete-column"></th>
+                        <th>単語</th>
+                        <th>フリガナ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="delete-column"><button type="button" class="removeRowButton">削除</button></td>
+                        <td contenteditable="true" data-required="true"></td>
+                        <td contenteditable="true" data-required="true" data-furigana="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="button-container">
+                <button type="button" id="addRowButton">+</button>
+            </div>
+            <div class="submit-container">
+                <button type="submit" id="submitButton">重複データのチェック</button>
+            </div>
+            <input type="hidden" name="tableData" id="tableData">
+        </form>
+        {% else %}
+        <!-- 重複データの表示エリア -->
+        <form action="{{ url_for('submit_request') }}" method="POST" id="myForm_checked">
+            <table id="dynamicTable_checked">
+                <thead>
+                    <tr>
+                        <!-- 削除列のヘッダーに特別なクラスを追加 -->
+                        <th class="delete-column"></th>
+                        <th>単語</th>
+                        <th>フリガナ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for word in input_data %}
+                    <tr>
+                        <td class="delete-column_checked">
+                            <button type="button" class="removeRowButton_checked">削除</button>
+                        </td>
+                        <td>
+                            {{ word[0] }}
+                            <input type="hidden" name="row-{{ loop.index0 }}-0" value="{{ word[0] }}">
+                        </td>
+                        <td>
+                            {{ word[1] }}
+                            <input type="hidden" name="row-{{ loop.index0 }}-1" value="{{ word[1] }}">
+                        </td>
+                        <!-- <td name="row-{{ loop.index0 }}-0">{{ word[0] }}</td>
+                        <td name="row-{{ loop.index0 }}-1">{{ word[1] }}</td> -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            {% if suspicious_data|length == 0 %}
+            <p style="text-align: center;">----- 重複データは見当たりません -----</p>
+            {% else %}
+            <p style="text-align: center;">----- 以下のデータに関して既存データとの重複が考えられます -----</p>
+            <ul>
+                {% for item in suspicious_data %}
+                <li>⚠️重複の可能性：『{{ item[0] }}』・・・『{{ item [2]}}』(ID:{{ item[1] }})？
+                </li>
+                {% endfor %}
+            </ul>
+            <p style="text-align: center;">重複している場合は，当該データを削除した後，<span
+                    style="font-weight: 800;">「リクエストを送信」</span>を押してください．</p>
+            {% endif %}
+            <div class="submit-container">
+                <button type="submit" id="submitButton">リクエストを送信</button>
+            </div>
+            <input type="hidden" name="tableData_checked" id="tableData_checked">
+        </form>
+        {% endif %}
+    </div>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // テーブルの tbody 要素を取得
+            const tableBodyChecked = document.querySelector("#dynamicTable_checked tbody");
+
+            if (tableBodyChecked) {
+                // tbody 内の削除ボタンに対してイベント委任を使用
+                tableBodyChecked.addEventListener("click", function (event) {
+                    // クリックされた要素が削除ボタンかどうかを確認
+                    if (event.target && event.target.classList.contains("removeRowButton_checked")) {
+                        // クリックされたボタンが属する tr を取得
+                        const row = event.target.closest("tr");
+                        // 行を削除
+                        row.remove();
+                    }
+                });
+            }
+        });
+
+
+        document.getElementById("addRowButton").addEventListener("click", function () {
+            let table = document.getElementById("dynamicTable").getElementsByTagName('tbody')[0];
+            let rowCount = table.rows.length; // 現在の行数を取得
+
+            if (rowCount >= 10) {
+                alert("これ以上行を追加できません．一度に送信できるデータは10までです．"); // 10行以上ならアラートを表示して処理を中止
+                return;
+            }
+
+            let newRow = table.insertRow();
+            // 削除ボタンを含むセル
+            let deleteCell = newRow.insertCell(0);
+            deleteCell.classList.add("delete-column");
+            let deleteButton = document.createElement("button");
+            deleteButton.textContent = "削除";
+            deleteButton.type = "button";
+            deleteButton.classList.add("removeRowButton");
+            deleteCell.appendChild(deleteButton);
+
+            // Column 1
+            let column1Cell = newRow.insertCell(1);
+            column1Cell.setAttribute('contenteditable', 'true');
+            column1Cell.setAttribute('data-required', 'true');
+
+            // Column 2 (フリガナ)
+            let column2Cell = newRow.insertCell(2);
+            column2Cell.setAttribute('contenteditable', 'true');
+            column2Cell.setAttribute('data-required', 'true');
+            column2Cell.setAttribute('data-furigana', 'true');
+
+            // 削除ボタンにイベントリスナーを追加
+            deleteButton.addEventListener("click", function () {
+                table.deleteRow(newRow.rowIndex - 1); // 行を削除
+            });
+        });
+
+        // フリガナチェック用の正規表現（カタカナのみ）
+        function isValidFurigana(text) {
+            const furiganaRegex = /^[ァ-ンヴー々〆〤]+$/;  // カタカナの範囲を指定
+            return furiganaRegex.test(text);
+        }
+
+        // フォーム送信時にバリデーションを実行
+        document.getElementById("myForm").addEventListener("submit", function (event) {
+            let table = document.getElementById("dynamicTable").getElementsByTagName('tbody')[0];
+            let rows = table.getElementsByTagName("tr");
+            let data = [];
+            let isValid = true; // フォームが有効かどうかを示すフラグ
+
+            // テーブル内の行をチェック
+            for (let row of rows) {
+                let cells = row.getElementsByTagName("td");
+                let rowData = [];
+                let cellIsFull = true; // セルが空白かどうかのフラグ
+                let cellIsKatakana = true; // セルの内容がカタカナかどうかのフラグ
+                let cellIsTooLong = false // セルの内容が長すぎるかどうかのフラグ
+                let cellIsTooShort = false // セルの内容が短すぎるかどうかのフラグ
+
+                for (let i = 1; i < cells.length; i++) { // 0番目（削除ボタンの列）はスキップ
+                    let cellValue = cells[i].innerText.trim();
+                    rowData.push(cellValue);
+
+                    // 必須項目が空の場合
+                    if (cells[i].getAttribute('data-required') !== null && cellValue === "") {
+                        cellIsFull = false;
+                    }
+
+                    // フリガナのバリデーション
+                    if (cells[i].getAttribute('data-furigana') !== null && !isValidFurigana(cellValue)) {
+                        cellIsKatakana = false;
+                    }
+
+                    // 文字長のバリデーション
+                    if (cells[i].getAttribute('data-furigana') !== null && cellValue.length < 10) {
+                        cellIsTooShort = true;
+                    }
+                    if (cells[i].getAttribute('data-required') !== null && cellValue.length > 136) {
+                        cellIsTooLong = true;
+                    }
+                }
+
+                // バリデーションに失敗した場合
+                if (!cellIsFull) {
+                    alert("記入されていない箇所があります．");
+                    event.preventDefault();
+                    return;
+                }
+                if (!cellIsKatakana) {
+                    alert("フリガナにはカタカナのみを入力してください．");
+                    event.preventDefault();
+                    return;
+                }
+
+                if (cellIsTooShort) {
+                    alert("フリガナが短すぎるデータが存在します．読みが10文字以上の単語を登録してください")
+                    event.preventDefault();
+                    return;
+                }
+
+                if (cellIsTooLong) {
+                    alert("文字長が長すぎるデータが存在します．最大文字長は136文字です．")
+                    event.preventDefault();
+                    return;
+                }
+
+                // 行が有効ならデータを保存
+                if (rowData.length > 0) {
+                    data.push(rowData);
+                }
+            }
+            if (isValid) {
+                // フォームが有効な場合のみデータを追加
+                document.getElementById("tableData").value = JSON.stringify(data); // JSON文字列に変換
+            }
+        });
+
+
+        document.getElementById("myForm_checked").addEventListener("submit", function (event) {
+            let table = document.getElementById("dynamicTable_checked").getElementsByTagName('tbody')[0];
+            let rows = table.getElementsByTagName("tr");
+
+            let tableData = [];
+
+            for (let row of rows) {
+                let cells = row.getElementsByTagName("td");
+                if (cells.length > 1) { // 削除ボタン列をスキップ
+                    let rowData = {
+                        column1: cells[1].innerText.trim(),
+                        column2: cells[2].innerText.trim()
+                    };
+                    tableData.push(rowData);
+                }
+            }
+
+            document.getElementById("tableData_checked").value = JSON.stringify(tableData);
+        });
+
+    </script>
+</body>
+
+</html>
