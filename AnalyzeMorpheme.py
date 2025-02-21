@@ -35,8 +35,6 @@ def get_furigana(input_word):
     # 辞書の相対パス．今回はNEologdで固有名詞にある程度対応
     mecabrc_path = "./mecab/mecabrc" # mecabrcの内容が無ければエラーになる
     dict_path = "./mecab/dic/mecab-ipadic-neologd"
-    # dic_path = "/usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd"
-    # tagger_yomi = MeCab.Tagger("-r /etc/mecabrc -Oyomi -d /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd")
     tagger_yomi = MeCab.Tagger(f"-r {mecabrc_path} -Oyomi -d {dict_path}")
 
     # parseで入力文字列の読み仮名を解析（カタカナ）
